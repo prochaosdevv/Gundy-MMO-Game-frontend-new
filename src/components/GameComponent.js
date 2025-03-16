@@ -9,7 +9,7 @@ import { ContractContext } from "@/contexts/ContractContext";
 const GameComponent = () => {
   const canvasRef = useRef(null);
   const appRef = useRef(null); // Use ref to persist app instance
-
+  const {activeRoom,setActiveRoom,activeRoomRef} = useContext(ContractContext);
   useEffect(() => {
     let isMounted = true; // Track mounting state
 
@@ -41,6 +41,22 @@ const GameComponent = () => {
           mainbg.width = app.screen.width; // Fit screen width
           mainbg.height = app.screen.height; // Fit screen height
           mainbg.zIndex = 0; // Fit screen height
+          mainbg.visible = false;
+          app.stage.addChild(mainbg);
+
+
+
+          const banktexture = await Assets.load("/assets/bankbg.png");
+          const bankbg = new Sprite(banktexture);
+          bankbg.x = 0;
+          bankbg.y = 0;
+          bankbg.width = app.screen.width; // Fit screen width
+          bankbg.height = app.screen.height; // Fit screen height
+          bankbg.zIndex = 0; // Fit screen height
+          bankbg.visible = false;
+          app.stage.addChild(bankbg);
+          
+
 
           const bgTexture = await Assets.load('/assets/landing.png');
           const bg = new Sprite(bgTexture);
@@ -73,8 +89,8 @@ const GameComponent = () => {
           animation.x = 650;
           animation.y = 400;
           animation.zIndex = 99;
-
-
+          animation.visible = false;
+          app.stage.addChild(animation);
           // Function to get the correct mouse position relative to the canvas
           function getMousePos(event) {
             const rect = app.canvas.getBoundingClientRect(); // Get canvas position
@@ -152,8 +168,54 @@ const GameComponent = () => {
             }
             return intersects % 2 !== 0; // Odd = inside, Even = outside
           }
+
+          const baseCity = [
+            { "x": 990 , "y": 284 },
+            { "x": 1058, "y": 276 },
+            { "x": 1064, "y": 310 },
+            { "x": 1000, "y": 348 },
+          ]
+
+          const backtoLanding = [
+            { "x": 162 , "y": 428 },
+            { "x": 195, "y": 441 },
+            { "x": 193, "y": 467 },
+            { "x": 161, "y": 456 },
+          ]
+
+          const bankGate = [
+            { "x": 981 , "y": 282 },
+            { "x": 1054, "y": 293 },
+            { "x": 1033, "y": 457 },
+            { "x": 943, "y": 435 },
+          ]
+
+          const bankBack = [
+            { "x": 64 , "y": 97 },
+            { "x": 572, "y": 98 },
+            { "x": 68, "y": 558 },
+            { "x": 551, "y": 556 },
+          ]
           app.stage.addEventListener('pointerdown', (e) => {
-            console.log("plot", e.global.x, e.global.y)
+            console.log("plot room",activeRoomRef.current)
+            if(activeRoomRef.current == "landing"){
+              const newX = e.global.x;
+              const newY = e.global.y
+              console.log("plot landing", e.global.x, e.global.y)
+
+              if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
+                console.log("plot found", e.global.x, e.global.y)
+                animation.visible = true;
+                mainbg.visible = true;
+        
+            setActiveRoom("base")
+                }
+              return;
+            }
+
+            if(activeRoomRef.current == "base"){
+
+            console.log("plot base", e.global.x, e.global.y)
             const newX = e.global.x;
             const newY = e.global.y
             // Calculate distance
@@ -161,6 +223,27 @@ const GameComponent = () => {
 
             // Compute duration dynamically (seconds)
             const duration = distance / 300;
+            if(isPointInPolygon({ x: newX, y: newY }, backtoLanding)){
+              setTimeout(() => {
+                animation.visible = false;
+                mainbg.visible = false;
+                bankbg.visible = false;
+                setActiveRoom("landing")
+
+              }, duration*1000);
+            }
+
+            if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
+              setTimeout(() => {
+                animation.visible = false;
+                mainbg.visible = false;
+                bankbg.visible = true;
+                setActiveRoom("bank")
+
+              }, duration*1000);
+            }
+
+
             if (isPointInPolygon({ x: newX, y: newY }, restrictedArea)) {
               gsap.to(animation, {
                 duration: duration,
@@ -170,14 +253,35 @@ const GameComponent = () => {
               });
 
             }
+          }
+
+
+          if(activeRoomRef.current == "bank"){
+            console.log("plot bank", e.global.x, e.global.y)
+            const newX = e.global.x;
+            const newY = e.global.y
+            // Calculate distance
+            const distance = Math.hypot(newX - animation.x, newY - animation.y);
+
+            // Compute duration dynamically (seconds)
+            const duration = distance / 300;
+            if(isPointInPolygon({ x: newX, y: newY }, bankBack)){
+              setTimeout(() => {
+                animation.visible = true;
+                mainbg.visible = true;
+                bankbg.visible = false;
+                setActiveRoom("base")
+
+              }, duration*1000);
+            }
+          }
             // avatar.position.copyFrom(e.global);
           });
           setTimeout(() => {
             // animatedSprite.visible = false;
             // bg.visible = false;
             animatedBarSprite.visible = false;
-            // app.stage.addChild(mainbg);
-            // app.stage.addChild(animation);
+        
 
             // app.stage.addChild(avatar); // Add background first (so it's behind everything)
 

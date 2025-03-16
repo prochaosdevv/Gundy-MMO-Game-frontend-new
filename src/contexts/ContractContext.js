@@ -1,7 +1,7 @@
 "use client";
 import { API_URL } from "@/utils/config";
 import axios from "axios";
-import React, { createContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useState, ReactNode, useEffect, useRef } from "react";
 
 
 
@@ -18,7 +18,11 @@ const ContractContextProvider = ({ children }) => {
   const [activeChatId, setActiveChatId] = useState(null)
   const [ad, setAd] = useState(null)
   const [activeRoom, setActiveRoom] = useState("landing")
+  const activeRoomRef  = useRef(activeRoom)
   
+  useEffect(() => {
+    activeRoomRef.current = activeRoom; // Always update ref when state changes
+}, [activeRoom]);
     // const access_token =  window.localStorage.getItem("access_token");
 
   // console.log(access_token)
@@ -73,7 +77,7 @@ useEffect(()=>{
     getAd()
 },[])
   return (
-    <ContractContext.Provider value={{user,allUser,getMe,getAllUsers,setFreindOpen,setChatOpen,chatOpen,freindOpen,activeChatTab,activeRoom,setActiveRoom, setActiveChatId,activeChatId,ad, setActiveChatTab}}>
+    <ContractContext.Provider value={{user,allUser,getMe,getAllUsers,setFreindOpen,setChatOpen,chatOpen,freindOpen,activeChatTab,activeRoom,setActiveRoom,activeRoomRef, setActiveChatId,activeChatId,ad, setActiveChatTab}}>
       {children}
     </ContractContext.Provider>
   );

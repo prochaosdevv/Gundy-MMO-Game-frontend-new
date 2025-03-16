@@ -56,7 +56,7 @@ const PopupBox = dynamic(
 
 
 export default function Home() {
-   const {chatOpen,setChatOpen,ad}=useContext(ContractContext)
+   const {chatOpen,setChatOpen,ad,activeRoom}=useContext(ContractContext)
   return (
     <Suspense>
     <div id="pixi-container" style={{position:"relative"}}>
@@ -71,7 +71,7 @@ export default function Home() {
         <WalletBox />
         <PopupBox />
         {
-          ad &&
+        (activeRoom == "landing" &&  ad) &&
         <Box 
   sx={{
     width: "316px",
