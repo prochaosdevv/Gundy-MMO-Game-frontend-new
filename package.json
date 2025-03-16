@@ -1,0 +1,35 @@
+{
+  "name": "gundy-game",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.10.15",
+    "@mui/material": "^5.14.4",
+    "@pixi/react": "^8.0.0-beta.25",
+    "@rainbow-me/rainbowkit": "^2.2.3",
+    "@tanstack/react-query": "^5.55.3",
+    "axios": "^1.7.4",
+    "gsap": "^3.12.7",
+    "next": "15.2.0",
+    "pixi.js": "^8.8.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "viem": "2.21.55",
+    "wagmi": "^2.14.7"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.0",
+    "tailwindcss": "^4"
+  }
+}
