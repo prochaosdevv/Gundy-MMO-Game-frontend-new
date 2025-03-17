@@ -123,12 +123,12 @@ const ChatBox = () => {
             // style={{visibility:chatOpen?"visible":"none",overFlow:chatOpen?"auto":"hidden"}}
           >
             <div
-              className={`tab ${activeChatTab=="room"?"active":""}`}
+              className={`tab ${activeChatTab=="room"?"":"active"}`}
               onClick={() => setActiveChatTab("room")}
             >
               Room Chat
             </div>
-            <div className={`tab ${activeChatTab=="private"?"active":""}`} onClick={() => setActiveChatTab("private")}>
+            <div className={`tab ${activeChatTab=="private"?"":"active"}`} onClick={() => setActiveChatTab("private")}>
               Private Chats
             </div>
           </div>
@@ -137,6 +137,12 @@ const ChatBox = () => {
       className={`chat-content ${activeChatTab === "room" ? "active" : ""}`}
     >
       <div className="chat-container-inner">
+      <div className="chat-bubble" style={{right:"-40px"}}  onClick={() => setChatOpen(!chatOpen)}>
+          <div className="icon_wrapper_"  >
+            <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />
+            <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
+          </div>
+        </div>
       <div className="vc-section">
                 <span className="vc-label">VC:</span>
                 <div className="vc-avatars">
@@ -241,7 +247,12 @@ const ChatBox = () => {
           >
             <div className="chat-container-inner">
             
-
+            <div className="chat-bubble" style={{right:"-40px"}}  onClick={() => setChatOpen(!chatOpen)}>
+          <div className="icon_wrapper_"  >
+            <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />
+            <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
+          </div>
+        </div>
             
                 {
                     activeChatId ?
@@ -264,12 +275,7 @@ const ChatBox = () => {
           </div>
         </div>
 
-        <div className="chat-bubble" onClick={() => setChatOpen(!chatOpen)}>
-          <div className="icon_wrapper"  >
-            <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />
-            <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
-          </div>
-        </div>
+    
     
     </>
   );

@@ -4,10 +4,10 @@ import { timeAgo, truncateAddress } from '@/utils/functions';
 import React, { useContext } from 'react'
 
 const PrivateChat = ({chat}) => {
-  const {setActiveChatId} = useContext(ContractContext)
+  const {setActiveChatId,setActiveChatUsername} = useContext(ContractContext)
   return (
  
-    <div className="message" onClick={() => setActiveChatId(chat.chatid)} style={{cursor:"pointer"}}>
+    <div className="message" onClick={() => {setActiveChatId(chat.chatid),setActiveChatUsername(chat?.username)}} style={{cursor:"pointer"}}>
     <img
       src="/assets/icons/vc.png"
       className="message-avatar"

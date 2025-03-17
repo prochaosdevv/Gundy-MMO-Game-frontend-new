@@ -7,9 +7,10 @@ import axios from 'axios';
 import React, { useContext, useState } from 'react'
 
 const FriendListRow = ({user,getFriends}) => {
- const { activeChatTab, setActiveChatTab,setActiveChatId, chatOpen, setChatOpen } =
+ const { activeChatTab, setActiveChatTab,setActiveChatId, chatOpen, setChatOpen,setActiveChatUsername } =
     useContext(ContractContext);
     const handleOPenChat=()=>{
+      setActiveChatUsername(user?.username)
         setChatOpen(true)
         // setTimeout(() => {
             setActiveChatTab("private")

@@ -9,7 +9,7 @@ import { ContractContext } from "@/contexts/ContractContext";
 const GameComponent = () => {
   const canvasRef = useRef(null);
   const appRef = useRef(null); // Use ref to persist app instance
-  const {activeRoom,setActiveRoom,activeRoomRef} = useContext(ContractContext);
+  const {activeRoom,setActiveRoom,activeRoomRef,setShowChatIcon} = useContext(ContractContext);
   useEffect(() => {
     let isMounted = true; // Track mounting state
 
@@ -290,10 +290,11 @@ const GameComponent = () => {
               adBanner.style.visibility = "visible";
             }
             
-            const chabubble = document.getElementById("chatIconLeft");
-            if(chabubble){
-              chabubble.style.visibility = "visible";
-            }
+            // const chabubble = document.getElementById("chatIconLeft");
+            // if(chabubble){
+            //   chabubble.style.visibility = "visible";
+            // }
+            setShowChatIcon(true)
             const menubar = document.getElementById("menubar");
             if (menubar) {
               menubar.style.visibility = "visible";

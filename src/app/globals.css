@@ -355,8 +355,12 @@ bottom: -5px;
     width:44px;
 }
 .icon_wrapper{
-    position: relative;
-    visibility: hidden;
+  position: relative;
+  /* visibility: hidden; */
+}
+.icon_wrapper_{
+  position: relative;
+  /* visibility: hidden; */
 }
 
 #adBanner{
