@@ -56,7 +56,7 @@ const PopupBox = dynamic(
 
 
 export default function Home() {
-   const {chatOpen,setChatOpen,ad,activeRoom}=useContext(ContractContext)
+   const {chatOpen,setChatOpen,ad,activeRoom,showChatIcon}=useContext(ContractContext)
   return (
     <Suspense>
     <div id="pixi-container" style={{position:"relative"}}>
@@ -110,7 +110,7 @@ export default function Home() {
   
 </Box>
         }
- {!chatOpen&&<Box sx={{
+ {showChatIcon && !chatOpen&&<Box sx={{
   cursor:"pointer",
   position: "absolute",
   top: "52%",

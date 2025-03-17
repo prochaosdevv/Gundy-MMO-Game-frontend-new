@@ -2,12 +2,13 @@
 
 import { ContractContext } from '@/contexts/ContractContext';
 import { API_URL } from '@/utils/config';
+import { truncateAddress } from '@/utils/functions';
 import { Box, CircularProgress } from '@mui/material';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 
 const ChatComponent = ({ chatId }) => {
- const { user , setActiveChatId} =
+ const { user , setActiveChatId,activeChatUsername,} =
     useContext(ContractContext);
     const [messages, setMessages] = useState([]);
     const [input,setInput] = useState(null)
@@ -81,10 +82,12 @@ const ChatComponent = ({ chatId }) => {
     return (
         <> 
                       <div className="chat-box" style={{height:chatId&&"59vh"}}>
-            <Box sx={{
+                      <Box sx={{
   display: "flex",
-  justifyContent:"end",
-  alignItems:"end",
+  justifyContent:"space-between",
+  alignItems:"center",
+  pb:"15px",
+  borderBottom:"1px solid gray",
       "& span":{
         background: "linear-gradient(180deg, #254cf9, #000000b0)",
   padding: "5px 15px",
@@ -95,6 +98,24 @@ const ChatComponent = ({ chatId }) => {
   cursor:"pointer"
       }
             }}>
+            {/* <Typography>{activeChatUsername}</Typography> */}
+            <Box sx={{
+              display: "flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  gap:"5px",
+ 
+  "& img":{
+    width:"35px",
+    height:"35px",
+    border: "2px solid #70D8FF",
+    borderRadius:"50%"
+
+  }
+            }}>
+            <img src="/assets/icons/vc.png" alt="User" />
+            <div className="name_box" style={{fontSize:"16px",marginBottom:"0"}}> {" "}{activeChatUsername?truncateAddress(activeChatUsername):"NA"}</div>
+            </Box>
             <span className='' onClick={() => setActiveChatId(null)}>Back</span>
             </Box>
          {messages.map((msg, index) => (
