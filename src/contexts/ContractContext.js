@@ -84,19 +84,19 @@ const {address,isConnected}=useAccount()
             address:address,
           });
           if (res?.status === 201) {
-            if (typeof window !== "undefined"){
+            
               setUser(res.data.data)
              
-                localStorage.setItem("access_token", res.data.token);
-                localStorage.setItem("username", res.data.data.username);
-            }
+              window.localStorage.setItem("access_token", res.data.token);
+              window.localStorage.setItem("username", res.data.data.username);
+           
           }
           if (res?.status === 200) {
-            if (typeof window !== "undefined"){
+           
                setUser(res.data.data)
-                localStorage.setItem("access_token", res.data.token);
-                localStorage.setItem("username", res.data.data.username);
-            }
+               window.localStorage.setItem("access_token", res.data.token);
+               window.localStorage.setItem("username", res.data.data.username);
+         
           }
         } catch (err) {
           console.log(err);

@@ -26,7 +26,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
      <ContractContextProvider>
-      <Providers children={children} />
+      <Providers >
+    {children}
+        </Providers>
      </ContractContextProvider>
      
      
