@@ -10,7 +10,7 @@ import { CircularProgress } from "@mui/material";
 import VoiceChat from "./VoiceChat";
 
 const ChatBox = () => {
-  const { activeChatTab,activeChatId,activeRoom,setActiveChatTab,activeVoiceUsers, chatOpen, setChatOpen } =
+  const { activeChatTab,activeChatId,activeRoom,setActiveChatTab,activeVoiceUsers, user, chatOpen, setChatOpen } =
     useContext(ContractContext);
     const [messages, setMessages] = useState([]);
     const [conversation, setConversation] = useState([]);
@@ -144,6 +144,8 @@ const ChatBox = () => {
             <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
           </div>
         </div>
+        {
+              user &&
       <div className="vc-section">
         {
           activeVoiceUsers > 0 &&
@@ -174,17 +176,18 @@ const ChatBox = () => {
         }
                 <VoiceChat />
               </div>
+              }
         <div className="chat-box" style={{paddingTop:"0"}}>
         {messages.map((msg, index) => (
             <div
               key={index}
-              className={`message ${msg.sender}`}
+              className={`message ${msg.sender == user._id   ? "" : "incoming" }`}
               style={{
                 display: "flex",
                 alignItems: "center",
                 margin: "0",
                 padding:"10px 0 0",
-                justifyContent: msg.sender === "incoming" ? "flex-start" : "flex-end",
+                justifyContent: msg.sender === user._id   ? "flex-start" : "flex-end",
                 borderBottom:"none"
               }}
             >
@@ -206,7 +209,7 @@ const ChatBox = () => {
           fontSize: "10px",
           color: "#999",
           marginTop: "5px",
-          // textAlign: msg.sender === user._id ? "right" : "left",
+          textAlign: msg.sender === user._id ? "right" : "left",
           lineHeight:"normal",
           fontWeight:"bold"
         }}
@@ -231,7 +234,8 @@ const ChatBox = () => {
             </div>
           ))}
         </div>
-
+            {
+              user &&
         <div className="chat_main_box">
           <div className="chat-input">
             <input
@@ -257,6 +261,7 @@ const ChatBox = () => {
             </div>
           </div>
         </div>
+    }
       </div>
     </div>
 
