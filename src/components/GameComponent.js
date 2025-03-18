@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useRef } from "react";
-import { Application, Sprite, Assets } from "pixi.js";
+import { Application, Sprite, Assets, AnimatedSprite } from "pixi.js";
 import { GifSprite } from 'pixi.js/gif';
 import gsap from "gsap";
 import { ContractContext } from "@/contexts/ContractContext";
@@ -12,7 +12,8 @@ const GameComponent = () => {
   const {activeRoom,setActiveRoom,activeRoomRef,setShowChatIcon} = useContext(ContractContext);
   useEffect(() => {
     let isMounted = true; // Track mounting state
-
+    let currentAvatarAngle = 0;
+    let animating = false;
     const initApp = async () => {
       try {
         // Initialize Application
@@ -79,12 +80,12 @@ const GameComponent = () => {
 
 
 
-          const sheet = await Assets.load('/assets/spritesheet.json');
+          const sheet = await Assets.load('/assets/texture.json');
 
           // Create an AnimatedSprite using frames
-          const animation = new Sprite(sheet.textures["1.png"]);
+          const animation = new Sprite(sheet.textures["0.png"]);
           console.log(animation)
-          animation.scale = 0.10
+          animation.scale = 0.08
 
           animation.x = 650;
           animation.y = 400;
@@ -114,26 +115,54 @@ const GameComponent = () => {
             // Ensure angle is positive (0-360)
             if (angle < 0) angle += 360;
             // Determine which frame to use based on the closest angle
-            const frameIndex = Math.round(angle / 30);
+            const frameIndex = Math.round(angle / 45);
             // console.log(angle, frameIndex)
 
             const rotationFrames = [
-              "34.png",
-              "30.png",
-              "21.png",
-              "14.png",
-              "12.png",
-              "7.png",
-              "5.png",
-              "1.png",
-              "39.png",
-              "37.png",
-              "36.png",
-              "35.png",
-              "35.png",
+              "0.png",
+              "45.png",
+              "90.png",
+              "135.png",
+              "180.png",
+              "225.png",
+              "270.png",
+              "315.png",
+              "0.png"
             ]
+            currentAvatarAngle = frameIndex;
             animation.texture = sheet.textures[rotationFrames[frameIndex]];
           }
+
+
+
+          const WalkingSprites = []; // Store all sprites here
+
+          for (let angle = 0; angle <= 315; angle += 45) {
+              const sheet = await Assets.load(`/assets/${angle}Walk.json`);
+              const frames = [];
+          
+              for (let i = 1; i <= 7; i++) {
+                  frames.push(sheet.textures[`${i}.png`]);
+              }
+              console.log("WalkingSprites", angle,frames)
+          
+              // Create an AnimatedSprite
+              const sprite = new AnimatedSprite(frames);
+              
+              // Set animation properties
+              sprite.animationSpeed = 0.1;
+              sprite.loop = true;
+              sprite.scale = 0.08;
+              sprite.x = animation.x;
+              sprite.y = animation.y;
+              sprite.visible = false;
+              
+              app.stage.addChild(sprite);
+              
+              // Store it in an object with its angle as the key
+              WalkingSprites.push(sprite);
+          }
+          
 
           // Listen for mouse movement
           app.stage.addEventListener('mousemove', updateSpriteRotation);
@@ -196,21 +225,85 @@ const GameComponent = () => {
             { "x": 68, "y": 558 },
             { "x": 551, "y": 556 },
           ]
+
+          const LandingrestrictedArea = [
+            { "x": 4 , "y": 255 },
+            { "x": 390 , "y": 232 },
+            { "x": 423 , "y": 381 },
+            { "x": 913 , "y": 365 },
+            { "x": 973 , "y": 255 },
+            { "x": 1302 , "y": 732 },
+            { "x": 9 , "y": 732 },
+            { "x": 4 , "y": 255 },
+
+          ]
           app.stage.addEventListener('pointerdown', (e) => {
             console.log("plot room",activeRoomRef.current)
             if(activeRoomRef.current == "landing"){
               const newX = e.global.x;
               const newY = e.global.y
+              const distance = Math.hypot(newX - animation.x, newY - animation.y);
+
+              // Compute duration dynamically (seconds)
+              const duration = distance / 50;
               console.log("plot landing", e.global.x, e.global.y)
 
               if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                 console.log("plot found", e.global.x, e.global.y)
-                animation.visible = true;
-                mainbg.visible = true;
-        
-            setActiveRoom("base")
+                setTimeout(() => {
+                  animation.visible = true;
+                  mainbg.visible = true;
+          
+              setActiveRoom("base")
+                }, duration*1000);
+               
                 }
-              return;
+
+
+                if (isPointInPolygon({ x: newX, y: newY }, LandingrestrictedArea)) {
+                  if(animating){
+                    return
+                  }
+                  animating = true;
+                  animation.visible = false;
+                  // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
+                  // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
+                  let _currentAvatarAngle = currentAvatarAngle <  8 ? currentAvatarAngle : 0
+                  if (WalkingSprites[_currentAvatarAngle]) {
+                    let sprite = WalkingSprites[_currentAvatarAngle];
+                    sprite.visible = true;
+                    sprite.play();
+                
+                    gsap.to(sprite, {
+                        duration: duration,
+                        x: newX - 25,
+                        y: newY - 50,
+                        ease: "none",
+                    });
+                }
+                setTimeout(() => {
+                  WalkingSprites.forEach(sprite => {
+                      sprite.visible = false;
+                      sprite.x = newX - 25;
+                      sprite.y = newY - 50;
+                      sprite.stop();
+                  });
+                  animation.x = newX - 25;
+                  animation.y = newY - 50;
+                  if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
+                    animation.x = 162;
+                    animation.y = 428;
+                  }
+                  animation.visible = true;
+                  animating = false;
+
+              }, duration * 1000);
+    
+               
+                 
+    
+                }
+          
             }
 
             if(activeRoomRef.current == "base"){
@@ -222,7 +315,7 @@ const GameComponent = () => {
             const distance = Math.hypot(newX - animation.x, newY - animation.y);
 
             // Compute duration dynamically (seconds)
-            const duration = distance / 300;
+            const duration = distance / 50;
             if(isPointInPolygon({ x: newX, y: newY }, backtoLanding)){
               setTimeout(() => {
                 animation.visible = false;
@@ -245,12 +338,48 @@ const GameComponent = () => {
 
 
             if (isPointInPolygon({ x: newX, y: newY }, restrictedArea)) {
-              gsap.to(animation, {
-                duration: duration,
-                x: newX - 25,
-                y: newY - 50,
-                ease: "none",  
+              animation.visible = false;
+              if(animating){
+                return
+              }
+              animating = true;
+              // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
+              // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
+              let _currentAvatarAngle = currentAvatarAngle <  8 ? currentAvatarAngle : 0
+              if (WalkingSprites[_currentAvatarAngle]) {
+                let sprite = WalkingSprites[_currentAvatarAngle];
+                sprite.visible = true;
+                sprite.play();
+            
+                gsap.to(sprite, {
+                    duration: duration,
+                    x: newX - 25,
+                    y: newY - 50,
+                    ease: "none",
+                });
+            }
+            setTimeout(() => {
+              WalkingSprites.forEach(sprite => {
+                  sprite.visible = false;
+                  sprite.x = newX - 25;
+                  sprite.y = newY - 50;
+                  sprite.stop();
               });
+              animation.x = newX - 25;
+              animation.y = newY - 50;
+              if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
+                animation.visible = false;
+              }
+              else{
+                animation.visible = true;
+
+              }
+              animating = false;
+
+          }, duration * 1000);
+
+           
+             
 
             }
           }
@@ -281,6 +410,7 @@ const GameComponent = () => {
             // animatedSprite.visible = false;
             // bg.visible = false;
             animatedBarSprite.visible = false;
+            animation.visible = true;
         
 
             // app.stage.addChild(avatar); // Add background first (so it's behind everything)

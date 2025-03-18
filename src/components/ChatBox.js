@@ -7,9 +7,10 @@ import ChatComponent from "./ChatComponent";
 import { API_URL } from "@/utils/config";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
+import VoiceChat from "./VoiceChat";
 
 const ChatBox = () => {
-  const { activeChatTab,activeChatId,activeRoom,setActiveChatTab, chatOpen, setChatOpen } =
+  const { activeChatTab,activeChatId,activeRoom,setActiveChatTab,activeVoiceUsers, chatOpen, setChatOpen } =
     useContext(ContractContext);
     const [messages, setMessages] = useState([]);
     const [conversation, setConversation] = useState([]);
@@ -144,13 +145,34 @@ const ChatBox = () => {
           </div>
         </div>
       <div className="vc-section">
+        {
+          activeVoiceUsers > 0 &&
+          <>
                 <span className="vc-label">VC:</span>
-                <div className="vc-avatars">
+                <div className="vc-avatars"> 
+                  {
+                    activeVoiceUsers == 1 ? 
                   <img src="/assets/icons/vc.png" alt="User" />
-                  <img src="/assets/icons/vc.png" alt="User" />
-                  <img src="/assets/icons/vc.png" alt="User" />
+                    :
+                    activeVoiceUsers == 2 ? 
+                    <>
+                    <img src="/assets/icons/vc.png" alt="User" />
+                    <img src="/assets/icons/vc.png" alt="User" />
+                    </>
+                    : activeVoiceUsers >= 3 ? 
+                    <>
+                    <img src="/assets/icons/vc.png" alt="User" />
+                    <img src="/assets/icons/vc.png" alt="User" />                    
+                    <img src="/assets/icons/vc.png" alt="User" />
+                    </>
+                    :
+                    <></>
+                  }                 
+                  {activeVoiceUsers > 3 ? +  activeVoiceUsers - 3 : ""}
                 </div>
-                <div className="join-btn">Join</div>
+          </>
+        }
+                <VoiceChat />
               </div>
         <div className="chat-box" style={{paddingTop:"0"}}>
         {messages.map((msg, index) => (
