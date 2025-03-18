@@ -2,6 +2,7 @@
 import { API_URL } from "@/utils/config";
 import axios from "axios";
 import React, { createContext, useState, ReactNode, useEffect, useRef } from "react";
+import { useAccount } from "wagmi";
 
 
 
@@ -75,6 +76,41 @@ const getAllUsers = async () => {
     }
   } catch (err) {}
 };
+
+const {address,isConnected}=useAccount()
+      const createUser = async () => {
+        try {
+          const res = await axios.post(`${API_URL}/create/user`, {
+            address:address,
+          });
+          if (res?.status === 201) {
+            if (typeof window !== "undefined"){
+              setUser(res.data.data)
+             
+                localStorage.setItem("access_token", res.data.token);
+                localStorage.setItem("username", res.data.data.username);
+            }
+          }
+          if (res?.status === 200) {
+            if (typeof window !== "undefined"){
+               setUser(res.data.data)
+                localStorage.setItem("access_token", res.data.token);
+                localStorage.setItem("username", res.data.data.username);
+            }
+          }
+        } catch (err) {
+          console.log(err);
+          if (err.response?.status === 404) {
+            console.log(err);
+          }
+        }
+      };
+      useEffect(() => {
+        if (address && isConnected) {
+          createUser();
+        }
+      }, [isConnected, address]);
+
 useEffect(()=>{
     getAllUsers()
     getAd()
