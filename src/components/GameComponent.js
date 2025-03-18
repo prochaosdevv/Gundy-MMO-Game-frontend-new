@@ -150,7 +150,7 @@ const GameComponent = () => {
               const sprite = new AnimatedSprite(frames);
               
               // Set animation properties
-              sprite.animationSpeed = 0.1;
+              sprite.animationSpeed = 0.3;
               sprite.loop = true;
               sprite.scale = 0.08;
               sprite.x = animation.x;
@@ -245,7 +245,7 @@ const GameComponent = () => {
               const distance = Math.hypot(newX - animation.x, newY - animation.y);
 
               // Compute duration dynamically (seconds)
-              const duration = distance / 50;
+              const duration = distance / 100;
               console.log("plot landing", e.global.x, e.global.y)
 
               if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
@@ -315,7 +315,7 @@ const GameComponent = () => {
             const distance = Math.hypot(newX - animation.x, newY - animation.y);
 
             // Compute duration dynamically (seconds)
-            const duration = distance / 50;
+            const duration = distance / 100;
             if(isPointInPolygon({ x: newX, y: newY }, backtoLanding)){
               setTimeout(() => {
                 animation.visible = false;
