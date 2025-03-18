@@ -252,9 +252,11 @@ const GameComponent = () => {
               if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                 console.log("plot found", e.global.x, e.global.y)
                 setTimeout(() => {
+                  animation.x = 168
+                  animation.y = 428
                   animation.visible = true;
                   mainbg.visible = true;
-          
+                  
               setActiveRoom("base")
                 }, duration*1000);
                
