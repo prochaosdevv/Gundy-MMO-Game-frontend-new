@@ -17,8 +17,9 @@ const FriendBox = () => {
     const closeBox = () => {
         document.getElementById("friend_popup").style.display = "none";
     };
- const {allUser}=useContext(ContractContext)
+ const {allUser,user:loggedUser}=useContext(ContractContext)
   const {address,isConnected}=useAccount()
+
 
  const [searchQuery, setSearchQuery] = useState("");
  const [pendingFriends, setPendingFriends] = useState([]);
@@ -28,9 +29,13 @@ const FriendBox = () => {
 
  
  const filteredUsers = allUser?.filter(user =>
-    user.username.toLowerCase().includes(searchQuery.toLowerCase()) &&
-    user.address !== address
+    user?.username.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    user?.address !== address &&
+    !loggedUser?.friendRequests.includes(user?._id) &&
+    !loggedUser?.friends.includes(user?._id)
 );
+
+
 
  const pendingFriendRequest = async () => {
      const access_token =  window.localStorage.getItem("access_token") ;
@@ -47,14 +52,17 @@ const FriendBox = () => {
      }
    } catch (err) {}
  };
-useEffect(()=>{
-    setInterval(() => {
-        pendingFriendRequest()
-        getFriends()
-    }, 3000);
-    
-
-},[])
+ useEffect(() => {
+    if (loggedUser?.address) {
+      const interval = setInterval(() => {
+        pendingFriendRequest();
+        getFriends();
+      }, 3000);
+  
+      return () => clearInterval(interval); 
+    }
+  }, [loggedUser?.address]);
+  
 
 
 
@@ -74,7 +82,7 @@ const getFriends = async () => {
 };
  
 
-// console.log(pendingFriends);
+
 
     return (
         <>
@@ -117,18 +125,23 @@ const getFriends = async () => {
                 {/* Panels */}
                 <div className="frnd_panel" style={{ display: activeTab === "frnd_first_panel" ? "block" : "none" }}>
                     {/* Friends List */}
-                    {friends.map((user, index) => (
+                    {friends?.length>0?friends.map((user, index) => (
                       <FriendListRow getFriends={getFriends} key={index}  user={user}/>
-                    ))}
+                   
+                    ))
+                    :
+                    <p style={{ textAlign: "center", color: "#000",paddingTop:"2rem",fontSize:"20px",fontWeight:"600" }}>Friends Not Found.</p>}
                 </div>
              
 
                 <div className="frnd_panel" style={{ display: activeTab === "frnd_second_panel" ? "block" : "none" }}>
                     {/* Pending Requests */}
                     {
-                    pendingFriends.map((user, index) => (
+                        pendingFriends?.length>0?pendingFriends.map((user, index) => (
                             <FriendPendingRow pendingFriendRequest={pendingFriendRequest} key={index} user={user}/>
-                    ))}
+                    )):
+                    <p style={{ textAlign: "center", color: "#000",paddingTop:"2rem",fontSize:"20px",fontWeight:"600" }}>Not Requested yet.</p>
+                    }
                 </div>
 
                 <div className="frnd_panel" style={{ display: activeTab === "frnd_third_panel" ? "block" : "none",lineHeight:"0" }}>

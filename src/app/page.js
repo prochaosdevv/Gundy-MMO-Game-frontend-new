@@ -63,7 +63,7 @@ export default function Home() {
       
         <GameComponent />
         <MenuBar />
-        {chatOpen &&<ChatBox />}
+        <ChatBox />
         <FriendBox />
         <EmoteBox />
         <ProfileBox />
@@ -110,7 +110,7 @@ export default function Home() {
   
 </Box>
         }
- {showChatIcon && !chatOpen&&<Box sx={{
+ {/* {showChatIcon && !chatOpen&&<Box sx={{
   cursor:"pointer",
   position: "absolute",
   top: "52%",
@@ -121,7 +121,7 @@ export default function Home() {
             <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />
             <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
           </div>
-        </Box>}
+        </Box>} */}
 
     </div>
     </Suspense>

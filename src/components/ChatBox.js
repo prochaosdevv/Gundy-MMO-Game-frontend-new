@@ -13,7 +13,7 @@ import { ConnectWalletButton } from "./CustomConnectButton";
 import { useAccount } from "wagmi";
 
 const ChatBox = () => {
-  const { activeChatTab,activeChatId,activeRoom,setActiveChatTab,activeVoiceUsers, user, chatOpen, setChatOpen } =
+  const { activeChatTab,activeChatId,activeRoom,setActiveChatTab,activeVoiceUsers, user, chatOpen, setChatOpen,showChatIcon } =
     useContext(ContractContext);
     const [messages, setMessages] = useState([]);
     const [conversation, setConversation] = useState([]);
@@ -22,12 +22,12 @@ const ChatBox = () => {
     const [input, setInput] = useState("");
   
      const getMessage = async () => {
-            const access_token =    window.localStorage.getItem("access_token")  ;
+            // const access_token =    window.localStorage.getItem("access_token")  ;
           
             try {
               const res = await axios.get(`${API_URL}/get/room/messages/${activeRoom}`, {
                 headers: {
-                  "x-access-token": access_token,
+                  // "x-access-token": access_token,
                 },
               });
            
@@ -91,15 +91,18 @@ const ChatBox = () => {
                     }
                   } catch (err) {}
                 };
-              useEffect(()=>{
-                let interval =   setInterval(() => {
-                    getConversation()                
-                  }, 2000);
-      
-                  return () => {
-                      clearInterval(interval)
-                  }
-              },[]) 
+          
+              useEffect(() => {
+                if (user?.address) {
+                  const interval = setInterval(() => {
+                    getConversation()
+                  }, 3000);
+              
+                  return () => clearInterval(interval); 
+                }
+              }, [user?.address]);
+             
+              
               const formatMessageDate = (timestamp) => {
                 const messageDate = new Date(timestamp);
                 return {
@@ -118,7 +121,18 @@ const ChatBox = () => {
               const {address}=useAccount()
 
   return (
-    <>
+    <Box>
+    {showChatIcon&&   <motion.div
+    className="chat-bubble"
+    initial={{ left: chatOpen ? 315 : -6 }} // Ensure it starts correctly
+    animate={{ left: chatOpen ? 312 : -6 }}
+    transition={{ duration: 0.2, ease: "easeInOut" }}
+    onClick={() => setChatOpen(!chatOpen)}>
+          <div className="icon_wrapper_"  >
+            <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />
+            <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
+          </div>
+        </motion.div>}
       <motion.div
   id="chatbox"
   className="chat-container"
@@ -130,10 +144,11 @@ const ChatBox = () => {
   }}
       >
         <div>
-          <div
-            className="chat-tabs"
-            // style={{visibility:chatOpen?"visible":"none",overFlow:chatOpen?"auto":"hidden"}}
-          >
+          <motion.div
+      className="chat-tabs"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}>
             <div
               className={`tab ${activeChatTab=="room"?"":"active"}`}
               onClick={() => setActiveChatTab("room")}
@@ -143,31 +158,24 @@ const ChatBox = () => {
             <div className={`tab ${activeChatTab=="private"?"":"active"}`} onClick={() => setActiveChatTab("private")}>
               Private Chats
             </div>
-          </div>
+          </motion.div>
 
-          <div
+          <motion.div
       className={`chat-content ${activeChatTab === "room" ? "active" : ""}`}
       style={{
         display: activeChatTab === "room" ? "block" : "none",
       }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
     >
       <div className="chat-container-inner">
-      <div className="chat-bubble" style={{right:"-40px"}}  onClick={() => setChatOpen(!chatOpen)}>
-          <div className="icon_wrapper_"  >
-            <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />
-            <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
-          </div>
-        </div>
+   
      <>
-  {!address ?   <Box sx={{
-        p:"1.5rem"
-    }}>
-    <ConnectWalletButton />
-    </Box>
- :
+  
       <>
       {
-              user &&
+            user &&
       <div className="vc-section">
         {
           activeVoiceUsers > 0 &&
@@ -259,6 +267,8 @@ const ChatBox = () => {
             {
               user &&
         <div className="chat_main_box">
+        {
+          address?
           <div className="chat-input">
             <input
               type="text"
@@ -282,28 +292,37 @@ const ChatBox = () => {
             
             </div>
           </div>
+          :
+          <Box px={"1rem"}>
+          <ConnectWalletButton />
+          </Box>
+        }
         </div>
     }
-      </>}
+      </>
+      
      </>
       </div>
-    </div>
+    </motion.div>
 
-          <div
+          <motion.div
             className="chat-content"
             style={{
               display: activeChatTab === "private" ? "block" : "none",
               position: "relative",
             }}
+            initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
           >
             <div className="chat-container-inner">
             
-            <div className="chat-bubble" style={{right:"-40px"}}  onClick={() => setChatOpen(!chatOpen)}>
+            {/* <div className="chat-bubble" style={{right:"-40px"}}  onClick={() => setChatOpen(!chatOpen)}>
           <div className="icon_wrapper_"  >
             <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />
             <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
           </div>
-        </div>
+        </div> */}
         <>
   {!address ?   <Box sx={{
         p:"1.5rem"
@@ -332,13 +351,13 @@ const ChatBox = () => {
           
           
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
     
     
-    </>
+    </Box>
   );
 };
 
