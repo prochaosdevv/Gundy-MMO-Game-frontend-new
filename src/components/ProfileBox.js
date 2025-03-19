@@ -5,6 +5,7 @@ import { truncateAddress } from "@/utils/functions";
 import { useContext } from "react";
 import { ConnectWalletButton } from "./CustomConnectButton";
 import { useAccount } from "wagmi";
+import { Box } from "@mui/material";
 
 const ProfileBox = () => {
     const {user}=useContext(ContractContext)
@@ -55,7 +56,11 @@ const ProfileBox = () => {
     </div>
   </div>
 :
+    <Box sx={{
+        p:"5rem"
+    }}>
     <ConnectWalletButton />
+    </Box>
 }
 
   

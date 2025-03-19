@@ -141,9 +141,12 @@ const GameComponent = () => {
               const sheet = await Assets.load(`/assets/${angle}Walk.json`);
               const frames = [];
           
-              for (let i = 1; i <= 7; i++) {
-                  frames.push(sheet.textures[`${i}.png`]);
-              }
+              // for (let i = 1; i <= 7; i++) {
+              //     frames.push(sheet.textures[`${i}.png`]);
+              // }
+              for (let i = 1; i <= 30; i++) {
+                frames.push(sheet.textures[`Walk${i}.png`]);
+            }
               console.log("WalkingSprites", angle,frames)
           
               // Create an AnimatedSprite

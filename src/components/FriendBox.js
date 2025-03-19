@@ -9,6 +9,7 @@ import axios from "axios";
 import { ContractContext } from "@/contexts/ContractContext";
 import { useAccount } from "wagmi";
 import { ConnectWalletButton } from "./CustomConnectButton";
+import { Box } from "@mui/material";
 
 const FriendBox = () => {
     const [activeTab, setActiveTab] = useState("frnd_first_panel");
@@ -24,9 +25,13 @@ const FriendBox = () => {
  const [friends, setFriends] = useState([]);
  
  // Filter users based on search input
+
+ 
  const filteredUsers = allUser?.filter(user =>
-     user.username.toLowerCase().includes(searchQuery.toLowerCase())
- );
+    user.username.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    user.address !== address
+);
+
  const pendingFriendRequest = async () => {
      const access_token =  window.localStorage.getItem("access_token") ;
 
@@ -69,37 +74,40 @@ const getFriends = async () => {
 };
  
 
-console.log(pendingFriends);
+// console.log(pendingFriends);
 
     return (
         <>
             <div id="friend_popup" className="friend-container" style={{ display: "none" }}>
-                {
-                    address ?
-                    <>
-                    
                 <div className="cross_box profile_cross" onClick={closeBox}>
                     <div className="cross_bg">
                         <img src="/assets/cross.png" className="cross_btn" alt="Close" />
                     </div>
                 </div>
+                {
+                    address ?
+                    <>
+                    
 
                 {/* Tabs */}
                 <div className="friend_tab">
                     <img
-                        src="/assets/frnd_list_btn.png"
+                        // src="/assets/frnd_list_btn.png"
+                        src={`${activeTab === "frnd_first_panel" ? "/assets/friend_list_active.png" : "/assets/frnd_list_btn.png"}`}
                         className={`frnd_list_btn ${activeTab === "frnd_first_panel" ? "active" : ""}`}
                         alt="Friends List"
                         onClick={() => setActiveTab("frnd_first_panel")}
                     />
                     <img
-                        src="/assets/pending_btn.png"
+                        // src="/assets/pending_btn.png"
+                        src={`${activeTab === "frnd_second_panel" ? "/assets/pending_active.png" : "/assets/pending_btn.png"}`}
                         className={`pending_btn ${activeTab === "frnd_second_panel" ? "active" : ""}`}
                         alt="Pending Requests"
                         onClick={() => setActiveTab("frnd_second_panel")}
                     />
                     <img
-                        src="/assets/add_frnd_btn.png"
+                        // src="/assets/add_frnd_btn.png"
+                        src={`${activeTab === "frnd_third_panel" ? "/assets/add_friend_active.png" : "/assets/add_frnd_btn.png"}`}
                         className={`add_frnd_btn ${activeTab === "frnd_third_panel" ? "active" : ""}`}
                         alt="Add Friend"
                         onClick={() => setActiveTab("frnd_third_panel")}
@@ -144,7 +152,11 @@ console.log(pendingFriends);
 
                 </>
                     :
-                    <ConnectWalletButton />
+                    <Box sx={{
+        p:"5rem"
+    }}>
+    <ConnectWalletButton />
+    </Box>
                 }
             </div>
         </>

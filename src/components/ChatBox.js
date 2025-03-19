@@ -6,8 +6,11 @@ import PrivateChat from "./PrivateChat";
 import ChatComponent from "./ChatComponent";
 import { API_URL } from "@/utils/config";
 import axios from "axios";
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import VoiceChat from "./VoiceChat";
+import { motion } from "framer-motion";
+import { ConnectWalletButton } from "./CustomConnectButton";
+import { useAccount } from "wagmi";
 
 const ChatBox = () => {
   const { activeChatTab,activeChatId,activeRoom,setActiveChatTab,activeVoiceUsers, user, chatOpen, setChatOpen } =
@@ -111,12 +114,20 @@ const ChatBox = () => {
                   }),
                 };
               };
+
+              const {address}=useAccount()
+
   return (
     <>
-      <div
-        id="chatbox"
-        className="chat-container"
-        // style={{width:chatOpen?"320px":"0px"}}
+      <motion.div
+  id="chatbox"
+  className="chat-container"
+  initial={{ width: 0 }}
+  animate={{ width: chatOpen ? 320 : 0 }}
+  transition={{ duration: 0.2, ease: "easeInOut" }}
+  style={{
+    overflow: chatOpen ? "visible" : "hidden",
+  }}
       >
         <div>
           <div
@@ -136,6 +147,9 @@ const ChatBox = () => {
 
           <div
       className={`chat-content ${activeChatTab === "room" ? "active" : ""}`}
+      style={{
+        display: activeChatTab === "room" ? "block" : "none",
+      }}
     >
       <div className="chat-container-inner">
       <div className="chat-bubble" style={{right:"-40px"}}  onClick={() => setChatOpen(!chatOpen)}>
@@ -144,7 +158,15 @@ const ChatBox = () => {
             <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
           </div>
         </div>
-        {
+     <>
+  {!address ?   <Box sx={{
+        p:"1.5rem"
+    }}>
+    <ConnectWalletButton />
+    </Box>
+ :
+      <>
+      {
               user &&
       <div className="vc-section">
         {
@@ -262,6 +284,8 @@ const ChatBox = () => {
           </div>
         </div>
     }
+      </>}
+     </>
       </div>
     </div>
 
@@ -280,8 +304,15 @@ const ChatBox = () => {
             <img src="/assets/chat_icon.png" className="icon_chat" alt="chat" />
           </div>
         </div>
-            
-                {
+        <>
+  {!address ?   <Box sx={{
+        p:"1.5rem"
+    }}>
+    <ConnectWalletButton />
+    </Box>
+ :
+             <>
+             {
                     activeChatId ?
                     <ChatComponent chatId={activeChatId} /> :
                     <>
@@ -295,12 +326,15 @@ const ChatBox = () => {
                         </div>               
                     </>
                 }
+             </>
+  }
+             </>
           
           
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
     
     
