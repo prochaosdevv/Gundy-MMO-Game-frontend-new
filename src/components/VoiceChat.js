@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { ContractContext } from "@/contexts/ContractContext";
+import { useAccount } from "wagmi";
 
 
 
@@ -20,10 +21,7 @@ export default function VoiceChat() {
         const TEMP_TOKEN = process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN; // Get from Agora console
         const CHANNEL_NAME = activeRoom;
         const UID = user._id;
-        await client.join(APP_ID, CHANNEL_NAME, TEMP_TOKEN, UID, {
-            autoReconnect: true, // Allows automatic reconnection
-            replace: true, // Forces reconnection if UID conflict
-        });
+        await client.join(APP_ID, CHANNEL_NAME, TEMP_TOKEN, UID);
         const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
         await client.publish([audioTrack]);
         setLocalAudioTrack(audioTrack);
@@ -80,8 +78,10 @@ export default function VoiceChat() {
         setJoined(false);
         setActiveVoiceUsers(activeClient.remoteUsers.length)
     };
-
+const {address}=useAccount()
     return (
+
+        address?(
             joined ? (
                 <div
                     onClick={() => leaveCall()}
@@ -91,6 +91,10 @@ export default function VoiceChat() {
                 </div>
             ) : activeRoom && user._id ? (
                 <div className="join-btn" onClick={() =>  setupAgora()}> Join</div>
-            ) : <></>        
+            ) : <></> 
+            
+        )  
+        :
+        <div style={{height:"25px"}} />   
     );
 }

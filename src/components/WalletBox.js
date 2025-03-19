@@ -44,7 +44,9 @@ const WalletBox = () => {
           m:"0 auto",
           width:"72%"
         }}> */}
+      {!address &&  <Box py={"2rem"}>
         <ConnectWalletButton />
+        </Box>}
       {address&&<DisconnectWalletButton />}
       {address &&<SwitchNetworkButton />}
        {/* </Box> */}
