@@ -211,13 +211,13 @@ const ChatBox = () => {
         {messages.map((msg, index) => (
             <div
               key={index}
-              className={`message ${msg.sender == user._id   ? "" : "incoming" }`}
+              className={`message ${msg?.sender == user?._id   ? "" : "incoming" }`}
               style={{
                 display: "flex",
                 alignItems: "center",
                 margin: "0",
                 padding:"10px 0 0",
-                justifyContent: msg.sender === user._id   ? "flex-start" : "flex-end",
+                justifyContent: msg?.sender === user?._id   ? "flex-start" : "flex-end",
                 borderBottom:"none"
               }}
             >
@@ -239,7 +239,7 @@ const ChatBox = () => {
           fontSize: "10px",
           color: "#999",
           marginTop: "5px",
-          textAlign: msg.sender === user._id ? "right" : "left",
+          textAlign: msg.sender === user?._id ? "right" : "left",
           lineHeight:"normal",
           fontWeight:"bold"
         }}
@@ -249,16 +249,16 @@ const ChatBox = () => {
                 <div
                   className="message-text"
                   style={{
-                    backgroundColor: msg.sender === user._id   ?   "#007bff" : "#e5e5e5",
-                    color: msg.sender === user._id   ?  "#fff" : "#000",
+                    backgroundColor: msg.sender === user?._id   ?   "#007bff" : "#e5e5e5",
+                    color: msg.sender === user?._id   ?  "#fff" : "#000",
                     padding: "10px",
-                    borderRadius: msg.sender === user._id 
+                    borderRadius: msg.sender === user?._id 
                     ?"15px 15px 0px 15px" 
                     : "15px 15px 15px 0px",
                     fontSize: "14px",
                   }}
                 >
-                  {msg.text}
+                  {msg?.text}
                 </div>
               </div>
             </div>
