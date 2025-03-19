@@ -14,6 +14,7 @@ const GameComponent = () => {
     let isMounted = true; // Track mounting state
     let currentAvatarAngle = 0;
     let animating = false;
+    let gsapanimation ;
     const initApp = async () => {
       try {
         // Initialize Application
@@ -153,7 +154,7 @@ const GameComponent = () => {
               const sprite = new AnimatedSprite(frames);
               
               // Set animation properties
-              sprite.animationSpeed = 0.3;
+              sprite.animationSpeed = 1;
               sprite.loop = true;
               sprite.scale = 0.08;
               sprite.x = animation.x;
@@ -210,10 +211,12 @@ const GameComponent = () => {
           ]
 
           const backtoLanding = [
-            { "x": 162 , "y": 428 },
-            { "x": 195, "y": 441 },
-            { "x": 193, "y": 467 },
-            { "x": 161, "y": 456 },
+            { "x": 43 , "y": 416 },
+            { "x": 141 , "y": 395 },
+            { "x": 200, "y": 437 },
+            { "x": 104, "y": 572 },
+            { "x": 3, "y": 516 },
+            { "x": 43 , "y": 416 },
           ]
 
           const bankGate = [
@@ -270,7 +273,17 @@ const GameComponent = () => {
 
                 if (isPointInPolygon({ x: newX, y: newY }, LandingrestrictedArea)) {
                   if(animating){
-                    return
+                    gsapanimation.pause(); // Stop animation without destroying it
+                    let target = gsapanimation.targets()[0]; // Get the animated element
+                  animation.x = gsap.getProperty(target, "x"); // Get the last 'x' position
+                  animation.y = gsap.getProperty(target, "y"); // Get the last 'y' position
+                  console.log("gsap",animation.x,animation.y)
+                  WalkingSprites.forEach(sprite => {
+                    sprite.visible = false;
+                    sprite.x = animation.x ;
+                    sprite.y = animation.y ;
+                    sprite.stop();
+                  })
                   }
                   animating = true;
                   animation.visible = false;
@@ -282,29 +295,44 @@ const GameComponent = () => {
                     sprite.visible = true;
                     sprite.play();
                 
-                    gsap.to(sprite, {
+                    gsapanimation = gsap.to(sprite, {
                         duration: duration,
                         x: newX - 25,
                         y: newY - 50,
                         ease: "none",
+                        
+                        onComplete: () => {
+                          WalkingSprites.forEach(sprite => {
+                            sprite.visible = false;
+                            
+                            sprite.stop();
+                            if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
+                              animation.x = 162;
+                              animation.y = 428;
+                              sprite.x = 162;
+                              sprite.y = 428;
+                            }
+                            else{
+                              sprite.x = newX - 25;
+                            sprite.y = newY - 50;
+                            }
+                        });
+                        animation.x = newX - 25;
+                        animation.y = newY - 50;
+                        if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
+                          animation.x = 162;
+                          animation.y = 428;
+                          WalkingSprites[_currentAvatarAngle].x = 162;
+                          WalkingSprites[_currentAvatarAngle].y = 428;
+                        }
+                        animation.visible = true;
+                        animating = false;
+      
+                        }
                     });
                 }
                 setTimeout(() => {
-                  WalkingSprites.forEach(sprite => {
-                      sprite.visible = false;
-                      sprite.x = newX - 25;
-                      sprite.y = newY - 50;
-                      sprite.stop();
-                  });
-                  animation.x = newX - 25;
-                  animation.y = newY - 50;
-                  if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
-                    animation.x = 162;
-                    animation.y = 428;
-                  }
-                  animation.visible = true;
-                  animating = false;
-
+                  
               }, duration * 1000);
     
                
@@ -348,7 +376,17 @@ const GameComponent = () => {
             if (isPointInPolygon({ x: newX, y: newY }, restrictedArea)) {
               animation.visible = false;
               if(animating){
-                return
+                gsapanimation.pause(); // Stop animation without destroying it
+                let target = gsapanimation.targets()[0]; // Get the animated element
+              animation.x = gsap.getProperty(target, "x"); // Get the last 'x' position
+              animation.y = gsap.getProperty(target, "y"); // Get the last 'y' position
+              console.log("gsap",animation.x,animation.y)
+              WalkingSprites.forEach(sprite => {
+                sprite.visible = false;
+                sprite.x = animation.x ;
+                sprite.y = animation.y ;
+                sprite.stop();
+            });
               }
               animating = true;
               // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
@@ -359,32 +397,35 @@ const GameComponent = () => {
                 sprite.visible = true;
                 sprite.play();
             
-                gsap.to(sprite, {
+                gsapanimation =  gsap.to(sprite, {
                     duration: duration,
                     x: newX - 25,
                     y: newY - 50,
                     ease: "none",
+                    onComplete: () => {
+                      WalkingSprites.forEach(sprite => {
+                        sprite.visible = false;
+                        sprite.x = newX - 25;
+                        sprite.y = newY - 50;
+                        sprite.stop();
+                    });
+                    animation.x = newX - 25;
+                    animation.y = newY - 50;
+                    if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
+                      animation.visible = false;
+                    }
+                    else{
+                      animation.visible = true;
+      
+                    }
+                    animating = false;
+      
+                    }
                 });
             }
-            setTimeout(() => {
-              WalkingSprites.forEach(sprite => {
-                  sprite.visible = false;
-                  sprite.x = newX - 25;
-                  sprite.y = newY - 50;
-                  sprite.stop();
-              });
-              animation.x = newX - 25;
-              animation.y = newY - 50;
-              if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
-                animation.visible = false;
-              }
-              else{
-                animation.visible = true;
-
-              }
-              animating = false;
-
-          }, duration * 1000);
+          //   setTimeout(() => {
+              
+          // }, duration * 1000);
 
            
              

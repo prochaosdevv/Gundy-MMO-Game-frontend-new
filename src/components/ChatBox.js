@@ -249,12 +249,12 @@ const ChatBox = () => {
                 <div
                   className="message-text"
                   style={{
-                    backgroundColor: msg.sender === "incoming" ? "#e5e5e5" : "#007bff",
-                    color: msg.sender === "incoming" ? "#000" : "#fff",
+                    backgroundColor: msg.sender === user._id   ?   "#007bff" : "#e5e5e5",
+                    color: msg.sender === user._id   ?  "#fff" : "#000",
                     padding: "10px",
-                    borderRadius: msg.sender === "incoming" 
-                      ? "15px 15px 15px 0px" 
-                      : "15px 15px 0px 15px",
+                    borderRadius: msg.sender === user._id 
+                    ?"15px 15px 0px 15px" 
+                    : "15px 15px 15px 0px",
                     fontSize: "14px",
                   }}
                 >
