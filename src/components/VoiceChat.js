@@ -19,7 +19,7 @@ export default function VoiceChat() {
         const APP_ID = process.env.NEXT_PUBLIC_AGORA_APP_ID; // Replace with your Agora App ID
         // alert(user._id)
         const TEMP_TOKEN = process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN; // Get from Agora console
-        const CHANNEL_NAME = activeRoom;
+        const CHANNEL_NAME = "landing";
         const UID = user._id;
         await client.join(APP_ID, CHANNEL_NAME, TEMP_TOKEN, UID);
         const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
