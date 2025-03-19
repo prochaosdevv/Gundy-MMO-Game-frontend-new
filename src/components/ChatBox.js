@@ -67,7 +67,7 @@ const ChatBox = () => {
        
           if (res.status === 200) {
             setLoader(false)
-            setMessages(res.data.messages);
+            // setMessages(res.data.messages);
             setInput("")
           }
         } catch (err) {
