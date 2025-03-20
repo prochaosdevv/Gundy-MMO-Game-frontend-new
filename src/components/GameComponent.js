@@ -405,17 +405,27 @@ const GameComponent = () => {
                     onComplete: () => {
                       WalkingSprites.forEach(sprite => {
                         sprite.visible = false;
-                        sprite.x = newX - 25;
-                        sprite.y = newY - 50;
+                        if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
+                          sprite.x = 1245;
+                          sprite.y = 241;
+                        }
+                        else{
+                          sprite.x = newX - 25;
+                          sprite.y = newY - 50;
+                        }
+                       
                         sprite.stop();
                     });
-                    animation.x = newX - 25;
-                    animation.y = newY - 50;
+                    
                     if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
                       animation.x = 1299 - 55
                       animation.y = 291 - 50
                       WalkingSprites[_currentAvatarAngle].x = 1245;
                       WalkingSprites[_currentAvatarAngle].y = 241;
+                    }
+                    else{
+                      animation.x = newX - 25;
+                    animation.y = newY - 50;
                     }
                     if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
                       animation.visible = false;
