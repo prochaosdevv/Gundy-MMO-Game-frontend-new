@@ -411,6 +411,10 @@ const GameComponent = () => {
                     });
                     animation.x = newX - 25;
                     animation.y = newY - 50;
+                    if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
+                      animation.x = 1299 - 25
+                      animation.y = 291 - 50
+                    }
                     if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
                       animation.visible = false;
                     }
