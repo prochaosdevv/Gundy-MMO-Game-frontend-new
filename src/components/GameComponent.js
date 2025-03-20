@@ -446,7 +446,7 @@ const GameComponent = () => {
             const distance = Math.hypot(newX - animation.x, newY - animation.y);
 
             // Compute duration dynamically (seconds)
-            const duration = distance / 300;
+            const duration = distance / 100;
             if(isPointInPolygon({ x: newX, y: newY }, bankBack)){
               setTimeout(() => {
                 animation.visible = true;
