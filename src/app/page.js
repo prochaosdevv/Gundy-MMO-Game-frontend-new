@@ -120,7 +120,7 @@ export default function Home() {
     width: "600px",
     height: "auto",
     position: "absolute",
-    top: "20%",
+    top: "18%",
     right: "110px",
     background: "#d2d8f3",
     // border: "6px solid #4e3855",
