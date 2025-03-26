@@ -429,6 +429,8 @@ const BankContainer = () => {
                       border: "none",
                       background: "transparent",
                       padding: "0",
+                      color:"#d2d8f3",
+                      fontWeight:"bold",
                     }}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
