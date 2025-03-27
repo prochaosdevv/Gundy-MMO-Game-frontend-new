@@ -71,7 +71,26 @@ const BankContainer = () => {
     setTimeout(() => setTooltipText("Copy to clipboard"), 2000);
   };
   return (
-    <>
+<>
+<div style={{position:"absolute",top:"18px",left:"18px",cursor:"pointer"}} onClick={handleStepBack}>
+          <img src="/assets/exit_btn.png" style={{width:"80px"}} alt="Chat" />
+        </div>
+<Box  sx={{
+      width: "600px",
+      height: "auto",
+      position: "absolute",
+      top: "16%",
+      right: "110px",
+      background: "#d2d8f3",
+      // border: "6px solid #4e3855",
+      borderRadius: "15px",
+      // transform: "rotate(0.5deg)",
+    
+      // p: "10px",
+    
+    
+    }}>
+       
       <Box sx={{
         "& .label":{
           color: "#4a4b61",
@@ -110,9 +129,9 @@ const BankContainer = () => {
             position:"relative"
           }}
         >
-      {(step2||step3)&&  <div className="icon-btn" style={{position:"absolute",top:"5px",left:"5px",width:"40px",height:"40px"}} onClick={handleStepBack}>
+      {/* {(step2||step3)&&  <div className="icon-btn" style={{position:"absolute",top:"5px",left:"5px",width:"40px",height:"40px"}} onClick={handleStepBack}>
           <img src="/assets/icons/ArrowIcon.png" className="icon-img" alt="Chat" style={{transform:"rotate(-180deg)",height:"40px"}} />
-        </div>}
+        </div>} */}
           <em>Network Bridge</em>
         </Typography>
         {/* 1st step  */}
@@ -747,7 +766,8 @@ const BankContainer = () => {
           </Box>
         )}
       </Box>
-    </>
+    </Box>
+</>
   );
 };
 

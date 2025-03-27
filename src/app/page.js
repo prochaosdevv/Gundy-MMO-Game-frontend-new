@@ -115,25 +115,7 @@ export default function Home() {
         }
         {
         (activeRoom == "bank") &&
-        <Box 
-  sx={{
-    width: "600px",
-    height: "auto",
-    position: "absolute",
-    top: "16%",
-    right: "110px",
-    background: "#d2d8f3",
-    // border: "6px solid #4e3855",
-    borderRadius: "15px",
-    // transform: "rotate(0.5deg)",
-  
-    // p: "10px",
-  
-  
-  }}
-
-
->
+        <Box>
 <BankContainer/>
 
 
