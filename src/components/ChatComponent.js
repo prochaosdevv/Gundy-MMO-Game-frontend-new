@@ -5,7 +5,7 @@ import { API_URL } from '@/utils/config';
 import { truncateAddress } from '@/utils/functions';
 import { Box, CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 const ChatComponent = ({ chatId }) => {
  const { user , setActiveChatId,activeChatUsername,} =
@@ -79,6 +79,15 @@ const ChatComponent = ({ chatId }) => {
           }),
         };
       };
+
+
+        const messagesEndRef = useRef(null);
+          useEffect(() => {
+          if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+          }
+        }, [messages]);
+
     return (
         <> 
                       <div className="chat-box" style={{height:chatId&&"59vh"}}>
@@ -174,6 +183,7 @@ const ChatComponent = ({ chatId }) => {
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
             </div>
             
         

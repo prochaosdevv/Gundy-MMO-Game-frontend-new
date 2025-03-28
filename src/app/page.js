@@ -14,6 +14,7 @@ import MenuBar from "@/components/MenuBar";
 // import PopupBox from "@/components/PopupBox";
 import { ContractContext } from "@/contexts/ContractContext";
 import { Box } from "@mui/material";
+import BankContainer from "@/components/BankContainer";
 
 const GameComponent = dynamic(
   () => import('@/components/GameComponent'),
@@ -57,6 +58,8 @@ const PopupBox = dynamic(
 
 export default function Home() {
    const {chatOpen,setChatOpen,ad,activeRoom,showChatIcon}=useContext(ContractContext)
+   console.log(activeRoom,ad);
+   
   return (
     <Suspense>
     <div id="pixi-container" style={{position:"relative"}}>
@@ -107,6 +110,15 @@ export default function Home() {
   <a href={ad.link} target="_blank" >
   <img src={ad.imageUrl} alt="Ad" />
   </a>
+  
+</Box>
+        }
+        {
+        (activeRoom == "bank") &&
+        <Box>
+<BankContainer/>
+
+
   
 </Box>
         }
