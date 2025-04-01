@@ -26,11 +26,11 @@ const ChatComponent = ({ chatId }) => {
       });
 
       if (res.status === 200) {
-        setMessages(res.data.messages);
 
         if (messagesEndRef.current && res.data.messages.length != messages.length) {
           messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
+        setMessages(res.data.messages);
 
 
       }
