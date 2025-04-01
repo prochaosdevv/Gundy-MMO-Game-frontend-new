@@ -277,8 +277,8 @@ const ChatBox = () => {
                           padding: "10px 0 0",
                           justifyContent:
                             msg?.sender === user?._id
-                              ? "flex-start"
-                              : "flex-end",
+                              ? "flex-end"
+                              : "flex-start",
                           borderBottom: "none",
                         }}
                       >
