@@ -22,7 +22,7 @@ const GameComponent = () => {
     let gsapanimation ;
     const access_token = window.localStorage.getItem("access_token");
 
-    const socket = io("https://api.gundys.world/ws", {
+    const socket = io("https://api.gundys.world", {
       auth: { access_token }
     });
     const initApp = async () => {
