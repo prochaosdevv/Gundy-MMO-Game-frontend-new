@@ -4,9 +4,12 @@ import { ContractContext } from "@/contexts/ContractContext";
 import { useContext, useEffect } from "react";
 
 const MenuBar = () => {
-  const {setChatOpen,chatOpen}=useContext(ContractContext)
+  const {setChatOpen,chatOpen, setAirTokBot,airTokBot}=useContext(ContractContext)
 
-    const handleProfileIconClick = () => {
+  const handleAirBotClick = () => {
+    setAirTokBot(!airTokBot)
+    }
+  const handleProfileIconClick = () => {
         const box = document.getElementById("profile_box");
         if (box.style.display === "block") {
           box.style.display = "none";
@@ -228,6 +231,13 @@ const MenuBar = () => {
         <div className="icon-btn" id="wallet_btn" onClick={() => handleWalleticonClick()}>
           <img
             src="/assets/icons/WalletIcon.png"
+            className="icon-img"
+            alt="Wallet"
+          />
+        </div>
+        <div className="icon-btn" onClick={() => handleAirBotClick()}>
+          <img
+            src="/assets/icons/ChatIcon.png"
             className="icon-img"
             alt="Wallet"
           />

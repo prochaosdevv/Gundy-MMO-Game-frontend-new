@@ -23,6 +23,7 @@ const ContractContextProvider = ({ children }) => {
   const [activeChatUsername, setActiveChatUsername] = useState(null)
   const activeRoomRef  = useRef(activeRoom)
   const [activeVoiceUsers, setActiveVoiceUsers] = useState(0);
+  const [airTokBot, setAirTokBot] = useState(false);
   
   useEffect(() => {
     activeRoomRef.current = activeRoom; // Always update ref when state changes
@@ -116,7 +117,7 @@ useEffect(()=>{
     getAd()
 },[])
   return (
-    <ContractContext.Provider value={{user,allUser,getMe,getAllUsers,setFreindOpen,setChatOpen,chatOpen,freindOpen,activeChatTab,activeRoom,setActiveRoom,activeRoomRef, setActiveChatId,activeChatId,ad, setActiveChatTab,showChatIcon, setShowChatIcon,activeChatUsername, setActiveChatUsername,setActiveVoiceUsers,activeVoiceUsers}}>
+    <ContractContext.Provider value={{user,allUser,getMe,getAllUsers,setFreindOpen,setChatOpen,chatOpen,freindOpen,activeChatTab,activeRoom,setActiveRoom,activeRoomRef, setActiveChatId,activeChatId,ad, setActiveChatTab,showChatIcon, setShowChatIcon,activeChatUsername, setActiveChatUsername,setActiveVoiceUsers,activeVoiceUsers,airTokBot, setAirTokBot}}>
       {children}
     </ContractContext.Provider>
   );

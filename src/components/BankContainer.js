@@ -136,10 +136,10 @@ const BankContainer = () => {
         </Typography>
         {/* 1st step  */}
         {step1 && (
-          <Box sx={{ p: "15px" }}>
+          <Box sx={{p:"15px"}}>
             <Box>
               <Typography className="label">
-                Choose Blockchain
+              Choose Blockchain
               </Typography>
 
               <Select

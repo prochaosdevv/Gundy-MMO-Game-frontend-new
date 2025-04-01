@@ -35,7 +35,7 @@ const [loader,setLoader]=useState(false)
             setLoader(false)
             getFriends()
           }
-      
+
         } catch (err) {
           console.log(err);
           if (err.response?.status === 404) {
@@ -43,9 +43,8 @@ const [loader,setLoader]=useState(false)
             setLoader(false)
           }
         }
+        
       };
-    
-
 
 
   return (
@@ -60,19 +59,17 @@ const [loader,setLoader]=useState(false)
       <div className="icon-btn" style={{width:"40px",height:"40px"}}>
       <CircularProgress
                     sx={{
-                      width: "16px !important",
-                      height: "16px !important",
-                      color: "#fff !important",
-                    }}
-                  />
+                    width: "16px !important",
+                    height: "16px !important",
+                    color: "#fff !important",
+                    }} 
+                  />                
         </div>
-               
                 ) : (
         <img src="/assets/remove_btn.png" alt="Remove" style={{cursor:"pointer"}}  onClick={() => unFriend()}  />
-                )}
-                  
-        
+       )}
     </div>
+
 </div>
   )
 }

@@ -25,28 +25,61 @@ const ChatBox = () => {
     showChatIcon,
   } = useContext(ContractContext);
   const [messages, setMessages] = useState([]);
+
   const [conversation, setConversation] = useState([]);
 
+
   const [input, setInput] = useState("");
-
+  const messagesEndRef = useRef(null);
+    useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
   const getMessage = async () => {
-    // const access_token =    window.localStorage.getItem("access_token")  ;
-
     try {
-      const res = await axios.get(
-        `${API_URL}/get/room/messages/${activeRoom}`,
-        {
-          headers: {
-            // "x-access-token": access_token,
-          },
-        }
-      );
-
+      const res = await axios.get(`${API_URL}/get/room/messages/${activeRoom}`);
+  
       if (res.status === 200) {
-        setMessages(res.data.messages);
+        const messages = res.data.messages;
+  
+        const senderIds = [...new Set(messages.map((msg) => msg.sender))];
+  
+        const userPromises = senderIds.map(async (id) => {
+          try {
+            const userRes = await axios.get(`${API_URL}/get/single/user/${id}`);
+            return { id, data: userRes.data }; 
+          } catch (error) {
+            console.error(`Error fetching user ${id}:`, error);
+            return { id, data: null };
+          }
+        });
+  
+        
+        const users = await Promise.all(userPromises);
+  
+   
+        const userMap = users.reduce((acc, user) => {
+          if (user.data) acc[user.id] = user.data;
+          return acc;
+        }, {});
+  
+        // Add user details to each message
+        const updatedMessages = messages.map((msg) => ({
+          ...msg,
+          senderUser: userMap[msg.sender].user.username || {}, // Attach user data if available
+        }));
+  
+        // Update state
+        setMessages(updatedMessages);
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
   };
+
+ 
+  
   useEffect(() => {
     let interval = setInterval(() => {
       getMessage();
@@ -57,14 +90,17 @@ const ChatBox = () => {
     };
   }, []);
 
+
+
+
   const [loader, setLoader] = useState(false);
   const sendMessage = async () => {
     if (input.trim() === "") return;
     setLoader(true);
-
     const access_token = window.localStorage.getItem("access_token");
     if (!activeRoom) {
       return;
+
     }
     try {
       const res = await axios.post(
@@ -132,19 +168,10 @@ const ChatBox = () => {
   };
 
   const { address } = useAccount();
-  const messagesEndRef = useRef(null);
-    useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
 
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
+
+
 
   return (
     <Box>
@@ -250,8 +277,8 @@ const ChatBox = () => {
                           padding: "10px 0 0",
                           justifyContent:
                             msg?.sender === user?._id
-                              ? "flex-start"
-                              : "flex-end",
+                              ? "flex-end"
+                              : "flex-start",
                           borderBottom: "none",
                         }}
                       >
@@ -268,6 +295,7 @@ const ChatBox = () => {
                             wordWrap: "break-word",
                           }}
                         >
+                       
                           <div
                             style={{
                               fontSize: "10px",
@@ -290,7 +318,7 @@ const ChatBox = () => {
                                   ? "#007bff"
                                   : "#e5e5e5",
                               color: msg.sender === user?._id ? "#fff" : "#000",
-                              padding: "10px",
+                              padding: "5px 10px",
                               borderRadius:
                                 msg.sender === user?._id
                                   ? "15px 15px 0px 15px"
@@ -298,6 +326,20 @@ const ChatBox = () => {
                               fontSize: "14px",
                             }}
                           >
+                             <div
+                            style={{
+                              fontSize: "10px",
+                              color:msg.sender === user?._id ? "#fff":"#000",
+                              marginTop: "5px",
+                              marginBottom: "5px",
+                              textAlign:
+                                msg.sender === user?._id ? "right" : "left",
+                              lineHeight: "normal",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {msg?.senderUser}
+                          </div>
                             {msg?.text}
                           </div>
                         </div>
