@@ -15,6 +15,7 @@ import MenuBar from "@/components/MenuBar";
 import { ContractContext } from "@/contexts/ContractContext";
 import { Box } from "@mui/material";
 import BankContainer from "@/components/BankContainer";
+import AirBot from "@/components/AirBot";
 
 const GameComponent = dynamic(
   () => import('@/components/GameComponent'),
@@ -57,7 +58,7 @@ const PopupBox = dynamic(
 
 
 export default function Home() {
-   const {chatOpen,setChatOpen,ad,activeRoom,showChatIcon}=useContext(ContractContext)
+   const {chatOpen,setChatOpen,ad,activeRoom,showChatIcon,airTokBot}=useContext(ContractContext)
    console.log(activeRoom,ad);
    
   return (
@@ -69,6 +70,7 @@ export default function Home() {
         <ChatBox />
         <FriendBox />
         <EmoteBox />
+        {airTokBot && <AirBot /> }
         <ProfileBox />
         <SettingBox />
         <WalletBox />

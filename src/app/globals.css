@@ -276,6 +276,11 @@ bottom: -5px;
   overflow-y: scroll;
   height: 53vh;
 }
+.chat-box_ {
+  padding: 10px;
+  background: #2c385b;
+  border-radius: 10px;
+}
 
 .message {
   display: flex;
@@ -386,6 +391,14 @@ bottom: -5px;
   bottom: 0;
   width: 100%;
 }
+.chat_main_box_ {
+  background: #fff;
+  padding: 8px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 0 0 15px 15px;
+}
 .chat-input input {
   flex-grow: 1;
   border: none;
@@ -434,6 +447,27 @@ top: 50%;
 left: 50%;
 transform:translate(-50%, -50%);
 z-index: 1000;
+}
+.air_bot{
+  width: 320px;
+  height: auto;
+  border-radius: 15px;
+  /* padding: 15px 15px 15px; */
+  padding-top: 5px;
+  color: white;
+  background: rgb(224 233 255 / 80%);
+  font-family: Arial, sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform:translate(-50%, -50%);
+  z-index: 1000;
+  border:2px solid #2c385b;
+}
+.air_bot_box_main{
+  overflow: scroll;
+  height: 350px;
+  margin-bottom: 3rem;
 }
 .emote-container{
     width: 190px;
@@ -769,26 +803,26 @@ border: 2.5px solid #2c385b;
   height: 210px;
 }
 /* Scrollbar for .grid-container */
-.grid_box_main::-webkit-scrollbar,.emote_grid_box_main::-webkit-scrollbar,.frnd_panel::-webkit-scrollbar {
+.grid_box_main::-webkit-scrollbar,.air_bot_box_main::-webkit-scrollbar,.emote_grid_box_main::-webkit-scrollbar,.frnd_panel::-webkit-scrollbar {
 width: 8px;
 }
 
 /* Scrollbar Track (Light Color) */
-.grid_box_main::-webkit-scrollbar-track,.emote_grid_box_main::-webkit-scrollbar-track,.frnd_panel::-webkit-scrollbar-track {
+.grid_box_main::-webkit-scrollbar-track,.air_bot_box_main::-webkit-scrollbar-track,.emote_grid_box_main::-webkit-scrollbar-track,.frnd_panel::-webkit-scrollbar-track {
 background: #e0e4ec;  /* Light background */
 border-radius: 10px;
 border: 2px solid #6874a8; /* Border around scrollbar */
 }
 
 /* Scrollbar Thumb (Dark Color) */
-.grid_box_main::-webkit-scrollbar-thumb,.emote_grid_box_main::-webkit-scrollbar-thumb,.frnd_panel::-webkit-scrollbar-thumb {
+.grid_box_main::-webkit-scrollbar-thumb,.air_bot_box_main::-webkit-scrollbar-thumb,.emote_grid_box_main::-webkit-scrollbar-thumb,.frnd_panel::-webkit-scrollbar-thumb {
 background: #1f294f; /* Dark color for contrast */
 border-radius: 10px;
 box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2);
 }
 
 /* Hover Effect */
-.grid_box_main::-webkit-scrollbar-thumb:hover,.emote_grid_box_main::-webkit-scrollbar-thumb:hover,.frnd_panel::-webkit-scrollbar-thumb:hover {
+.grid_box_main::-webkit-scrollbar-thumb:hover,.air_bot_box_main::-webkit-scrollbar-thumb:hover,.emote_grid_box_main::-webkit-scrollbar-thumb:hover,.frnd_panel::-webkit-scrollbar-thumb:hover {
 background: #152040; /* Slightly darker on hover */
 }
 
