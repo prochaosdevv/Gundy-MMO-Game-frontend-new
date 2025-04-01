@@ -1,22 +1,34 @@
 "use client";
 
 import { useContext, useEffect, useRef } from "react";
-import { Application, Sprite, Assets, AnimatedSprite } from "pixi.js";
+import { Application, Sprite, Assets, AnimatedSprite, Text } from "pixi.js";
 import { GifSprite } from 'pixi.js/gif';
 import gsap from "gsap";
 import { ContractContext } from "@/contexts/ContractContext";
+import { io } from "socket.io-client";
 
 const GameComponent = () => {
   const canvasRef = useRef(null);
   const appRef = useRef(null); // Use ref to persist app instance
-  const {activeRoom,setActiveRoom,activeRoomRef,setShowChatIcon} = useContext(ContractContext);
+  const socketRef = useRef(null);
+  const players = useRef({}); 
+  const playersWalking = useRef({})
+  const userPos = useRef({})
+  const {activeRoom,setActiveRoom,activeRoomRef,setShowChatIcon,user} = useContext(ContractContext);
   useEffect(() => {
     let isMounted = true; // Track mounting state
     let currentAvatarAngle = 0;
     let animating = false;
     let gsapanimation ;
+    const access_token = window.localStorage.getItem("access_token");
+
+    const socket = io("http://localhost:3001", {
+      auth: { access_token }
+    });
     const initApp = async () => {
       try {
+      
+
         // Initialize Application
         const app = new Application();
         await app.init({
@@ -90,6 +102,15 @@ const GameComponent = () => {
 
           animation.x = 650;
           animation.y = 400;
+          
+          // const nameText = new Text("Player123", {
+          //   fontSize: 14,
+          //   fill: 0xffffff
+          // });
+          // nameText.anchor.set(0.5, 1);
+          // nameText.y = 400;
+          // app.stage.addChild(nameText);
+
           animation.zIndex = 99;
           animation.visible = false;
           app.stage.addChild(animation);
@@ -131,6 +152,8 @@ const GameComponent = () => {
               "0.png"
             ]
             currentAvatarAngle = frameIndex;
+            socket.emit("move", { x: animation.x, y: animation.y,angle: frameIndex });
+
             animation.texture = sheet.textures[rotationFrames[frameIndex]];
           }
 
@@ -294,6 +317,7 @@ const GameComponent = () => {
                     let sprite = WalkingSprites[_currentAvatarAngle];
                     sprite.visible = true;
                     sprite.play();
+                    socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle });
                 
                     gsapanimation = gsap.to(sprite, {
                         duration: duration,
@@ -330,6 +354,7 @@ const GameComponent = () => {
       
                         }
                     });
+
                 }
                 setTimeout(() => {
                   
@@ -396,6 +421,7 @@ const GameComponent = () => {
                 let sprite = WalkingSprites[_currentAvatarAngle];
                 sprite.visible = true;
                 sprite.play();
+                socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle });
             
                 gsapanimation =  gsap.to(sprite, {
                     duration: duration,
@@ -435,9 +461,10 @@ const GameComponent = () => {
       
                     }
                     animating = false;
-      
+                
                     }
                 });
+
             }
           //   setTimeout(() => {
               
@@ -488,7 +515,7 @@ const GameComponent = () => {
             // const chabubble = document.getElementById("chatIconLeft");
             // if(chabubble){
             //   chabubble.style.visibility = "visible";
-            // }
+            // }`
             setShowChatIcon(true)
             const menubar = document.getElementById("menubar");
             if (menubar) {
@@ -496,7 +523,114 @@ const GameComponent = () => {
             }
           }, 2500)
 
+          socket.on("playersUpdate", async (data) => {
+           
+            for (const id in data) {
+              if (id === user._id) continue;
+              const pos = data[id];
+              const _rotationFrames = [
+                "0.png",
+                "45.png",
+                "90.png",
+                "135.png",
+                "180.png",
+                "225.png",
+                "270.png",
+                "315.png",
+                "0.png"
+              ]
+              if (!players.current[id]) {
 
+                const p = new Sprite(sheet.textures[_rotationFrames[6]]);
+      
+                p.scale = 0.08
+                p.x = 650;
+                p.y = 400;
+                p.zIndex = 99;
+                app.stage.addChild(p);
+                players.current[id] = p;
+              }
+
+              if (!playersWalking.current[id]) {
+
+              const WalkingSprites = []; // Store all sprites here
+
+          for (let angle = 0; angle <= 315; angle += 45) {
+
+              const sheet = await Assets.load(`/assets/${angle}Walk.json`);
+              const frames = [];
+           
+              for (let i = 1; i <= 30; i++) {
+                frames.push(sheet.textures[`Walk${i}.png`]);
+            }
+              console.log("WalkingSprites", angle,frames)
+          
+              // Create an AnimatedSprite
+              const sprite = new AnimatedSprite(frames);
+              
+              // Set animation properties
+              sprite.animationSpeed = 1;
+              sprite.loop = true;
+              sprite.scale = 0.08;
+              sprite.x = animation.x;
+              sprite.y = animation.y;
+              sprite.visible = false;
+
+              app.stage.addChild(sprite);
+              
+              // Store it in an object with its angle as the key
+              WalkingSprites.push(sprite);
+
+          }
+        playersWalking.current[id] = WalkingSprites
+              }
+
+              const distance = Math.hypot(pos.x - players.current[id].x, pos.y - players.current[id].y);
+
+              // Compute duration dynamically (seconds)
+              const duration = distance / 100;
+
+              players.current[id].texture = sheet.textures[_rotationFrames[parseInt(pos.angle)]];
+              if(players.current[id].x != pos.x){
+                players.current[id].visible = false;
+                playersWalking.current[id][pos.angle].visible = true;
+              // players.current[id]
+
+             
+            let sprite = playersWalking.current[id][pos.angle];
+            sprite.visible = true;
+            sprite.play();
+              gsap.to(sprite, {
+                duration: duration,
+                x: pos.x,
+                y: pos.y, 
+                ease: "none",
+                onComplete: () => {
+                  playersWalking.current[id].forEach(sprite => {
+                    sprite.visible = false;                
+                    sprite.x = pos.x;
+                    sprite.y = pos.y ;               
+                    sprite.stop();
+                });
+              players.current[id].visible = true;
+              players.current[id].x = pos.x;
+              players.current[id].y = pos.y;
+
+                }
+              });
+            }
+
+            }
+      
+            for (const id in players.current) {
+              if (!data[id]) {
+                app.stage.removeChild(players.current[id]);
+                app.stage.removeChild(playersWalking.current[id]);
+                delete players.current[id];
+                delete playersWalking.current[id];
+              }
+            }
+          });
           // Animation
 
         }
@@ -505,12 +639,17 @@ const GameComponent = () => {
       }
     };
 
+ 
+
     initApp();
 
     // Cleanup on unmount
     return () => {
       isMounted = false;
       if (appRef.current) {
+        if(socket){
+          socket.disconnect();
+        }
         appRef.current.destroy(true, {
           children: true,
           texture: true,
@@ -519,11 +658,16 @@ const GameComponent = () => {
         appRef.current = null; // Clear ref
       }
     };
-  }, []);
+  }, [user]);
 
+  useEffect(() => {
+    console.log("players",players)
+
+  },[players])
 
 
   return (<>
+ 
   <div ref={canvasRef} />
   </>)
   

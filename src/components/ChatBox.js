@@ -25,25 +25,25 @@ const ChatBox = () => {
     showChatIcon,
   } = useContext(ContractContext);
   const [messages, setMessages] = useState([]);
-
+  const [intervalTimer, setIntervalTimer] = useState(0);
+  
   const [conversation, setConversation] = useState([]);
 
 
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
-    useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
+   
   const getMessage = async () => {
     try {
       const res = await axios.get(`${API_URL}/get/room/messages/${activeRoom}`);
   
       if (res.status === 200) {
-        const messages = res.data.messages;
-  
-        const senderIds = [...new Set(messages.map((msg) => msg.sender))];
+        const _messages = res.data.messages;
+        console.log("messages",_messages,messages)
+        if (messagesEndRef.current && _messages.length != messages.length) {
+          messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+        const senderIds = [...new Set(_messages.map((msg) => msg.sender))];
   
         const userPromises = senderIds.map(async (id) => {
           try {
@@ -65,7 +65,7 @@ const ChatBox = () => {
         }, {});
   
         // Add user details to each message
-        const updatedMessages = messages.map((msg) => ({
+        const updatedMessages = _messages.map((msg) => ({
           ...msg,
           senderUser: userMap[msg.sender].user.username || {}, // Attach user data if available
         }));
@@ -79,10 +79,14 @@ const ChatBox = () => {
   };
 
  
-  
+  useEffect(() => {
+    if(chatOpen){
+      getMessage();
+    }
+  },[intervalTimer])
   useEffect(() => {
     let interval = setInterval(() => {
-      getMessage();
+      setIntervalTimer(new Date().getTime())
     }, 2000);
 
     return () => {
@@ -180,8 +184,8 @@ const ChatBox = () => {
           className="chat-bubble"
           initial={{ left: chatOpen ? 315 : -6 }} // Ensure it starts correctly
           animate={{ left: chatOpen ? 312 : -6 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-          onClick={() => setChatOpen(!chatOpen)}
+          transition={{ duration: 0.2, ease: "easeInOut" }}         
+          onClick={() => {setChatOpen(!chatOpen); messagesEndRef.current.scrollIntoView({ behavior: "smooth" })} }
         >
           <div className="icon_wrapper_">
             <img src="/assets/chat_bg1.png" className="icon_bg" alt="chat_bg" />

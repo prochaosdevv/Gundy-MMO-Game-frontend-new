@@ -29,11 +29,11 @@ const AirBot = () => {
     return { date: date.toLocaleDateString(), time: date.toLocaleTimeString([], options) };
   };
 
-      useEffect(() => {
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }, [messages]);
+    //   useEffect(() => {
+    //   if (messagesEndRef.current) {
+    //     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    //   }
+    // }, [messages]);
 
   return (
     <div id="air_bot" className="air_bot">
