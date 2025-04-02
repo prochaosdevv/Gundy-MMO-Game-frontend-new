@@ -29,11 +29,11 @@ const AirBot = () => {
     return { date: date.toLocaleDateString(), time: date.toLocaleTimeString([], options) };
   };
 
-    //   useEffect(() => {
-    //   if (messagesEndRef.current) {
-    //     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    //   }
-    // }, [messages]);
+      useEffect(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, [messages]);
 
   return (
     <div id="air_bot" className="air_bot">
@@ -42,11 +42,11 @@ const AirBot = () => {
           <img src="/assets/cross.png" className="cross_btn" alt="Close" onClick={() => setAirTokBot(false)} />
         </div>
       </div>
-      <p className="chat-header">AIRTOK BOT</p>
+      <p className="chat-header" style={{marginTop:"-15px"}}>AIRTOK BOT</p>
       <div className="air_bot_box_main">
         <div className="chat-box_">
           {messages.map((msg, index) => (
-            <div key={index} className={`message ${msg.sender === "user" ? "sent" : "received"}`}>
+            <div key={index} className={`message ${msg.sender === "user" ? "received" : "sent"}`}>
               <div className="message-content">
                 <div className="message-time">
                   {formatMessageDate(msg.createdAt).date}, {formatMessageDate(msg.createdAt).time}
@@ -97,7 +97,7 @@ const AirBot = () => {
         .message {
           display: flex;
           align-items: center;
-          padding: 10px 0;
+          padding: 8px 0;
           justify-content: flex-start;
         }
         .message.sent {
@@ -107,7 +107,7 @@ const AirBot = () => {
           justify-content: flex-end;
         }
         .message-content {
-          max-width: 60%;
+          max-width: 55%;
           word-wrap: break-word;
         }
         .message-time {
