@@ -12,6 +12,7 @@ export const ContractContext = createContext();
 
 const ContractContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [quickChat, setQuickChat] = useState(null);
   const [showChatIcon, setShowChatIcon] = useState(false);
   const [allUser, setAllUser] = useState([]);
   const [chatOpen, setChatOpen] = useState(false);

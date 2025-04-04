@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useRef } from "react";
-import { Application, Sprite, Assets, AnimatedSprite, Text } from "pixi.js";
+import { Application, Sprite, Assets, AnimatedSprite, Text, Container, NineSlicePlane, Point } from "pixi.js";
 import { GifSprite } from 'pixi.js/gif';
 import gsap from "gsap";
 import { ContractContext } from "@/contexts/ContractContext";
@@ -14,7 +14,8 @@ const GameComponent = () => {
   const players = useRef({}); 
   const playersWalking = useRef({})
   const userPos = useRef({})
-  const {activeRoom,setActiveRoom,activeRoomRef,setShowChatIcon,user} = useContext(ContractContext);
+  const {activeRoom,setActiveRoom,quickChat,setQuickChat,activeRoomRef,setShowChatIcon,user} = useContext(ContractContext);
+ 
   useEffect(() => {
     let isMounted = true; // Track mounting state
     let currentAvatarAngle = 0;
@@ -90,9 +91,38 @@ const GameComponent = () => {
           animatedBarSprite.animationSpeed = 1.8; // Make animation faster
           animatedBarSprite.zIndex = 0;
           app.stage.addChild(animatedBarSprite);
+          const quickChatContainer = new Container();
+// Load the texture (already in your loader or from file)
+const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
+
+// Create a resizable background using 9-slice scaling
+const bubble = new NineSlicePlane(bubbleTexture, 15, 15, 15, 15); 
+// These 4 values are your left, top, right, bottom edge slices
+bubble.name = "bubble";
+bubble.scale = 0.08
+bubble.anchor = new Point(0.2, 0.7);
 
 
-
+          
+          
+          const nameText = new Text(quickChat, {
+            fontSize: 16,
+            wordWrap: true,
+            align: "center",
+            wordWrapWidth: 10,
+            fill: 0x000000
+          });
+          nameText.anchor.set(0.1, 1);
+          // nameText.y = -5;
+          nameText.l
+          // const bounds = nameText.getLocalBounds();
+          // nameText
+          bubble.width =  2200
+          bubble.height = quickChat ? quickChat.length > 20 ? 1000 : 500 : 500
+          quickChatContainer.addChild(bubble)
+          quickChatContainer.addChild(nameText)
+          quickChatContainer.visible = false;
+          const playerContainer = new Container();
           const sheet = await Assets.load('/assets/texture.json');
 
           // Create an AnimatedSprite using frames
@@ -100,9 +130,17 @@ const GameComponent = () => {
           console.log(animation)
           animation.scale = 0.08
 
-          animation.x = 650;
-          animation.y = 400;
+          // playerContainer.sprite = animation
+ 
           
+          playerContainer.addChild(animation);
+          playerContainer.addChild(quickChatContainer);
+          
+          playerContainer.x = 650;
+          playerContainer.y = 400;
+          playerContainer.zIndex = 99;
+          playerContainer.visible = false;
+          app.stage.addChild(playerContainer);
           // const nameText = new Text("Player123", {
           //   fontSize: 14,
           //   fill: 0xffffff
@@ -111,9 +149,8 @@ const GameComponent = () => {
           // nameText.y = 400;
           // app.stage.addChild(nameText);
 
-          animation.zIndex = 99;
-          animation.visible = false;
-          app.stage.addChild(animation);
+       
+          // app.stage.addChild(animation);
           // Function to get the correct mouse position relative to the canvas
           function getMousePos(event) {
             const rect = app.canvas.getBoundingClientRect(); // Get canvas position
@@ -132,7 +169,7 @@ const GameComponent = () => {
           function updateSpriteRotation(event) {
             const { x: mouseX, y: mouseY } = getMousePos(event);
             // Calculate angle in radians and convert to degrees
-            let angle = getAngleBetweenPoints(mouseX, mouseY, animation.x + 25, animation.y + 50);
+            let angle = getAngleBetweenPoints(mouseX, mouseY, playerContainer.x + 25, playerContainer.y + 50);
 
             // Ensure angle is positive (0-360)
             if (angle < 0) angle += 360;
@@ -152,9 +189,9 @@ const GameComponent = () => {
               "0.png"
             ]
             currentAvatarAngle = frameIndex;
-            socket.emit("move", { x: animation.x, y: animation.y,angle: frameIndex });
+            socket.emit("move", { x: playerContainer.x, y: playerContainer.y,angle: frameIndex , activeRoom: activeRoom });
 
-            animation.texture = sheet.textures[rotationFrames[frameIndex]];
+            playerContainer.children[0].texture = sheet.textures[rotationFrames[frameIndex]];
           }
 
 
@@ -171,7 +208,7 @@ const GameComponent = () => {
               for (let i = 1; i <= 30; i++) {
                 frames.push(sheet.textures[`Walk${i}.png`]);
             }
-              console.log("WalkingSprites", angle,frames)
+              // console.log("WalkingSprites", angle,frames)
           
               // Create an AnimatedSprite
               const sprite = new AnimatedSprite(frames);
@@ -180,15 +217,16 @@ const GameComponent = () => {
               sprite.animationSpeed = 1;
               sprite.loop = true;
               sprite.scale = 0.08;
-              sprite.x = animation.x;
-              sprite.y = animation.y;
+              // sprite.x = playerContainer.x;
+              // sprite.y = playerContainer.y;
               sprite.visible = false;
               
-              app.stage.addChild(sprite);
+              // playerContainer.addChild(sprite);
               
               // Store it in an object with its angle as the key
               WalkingSprites.push(sprite);
           }
+          
           
 
           // Listen for mouse movement
@@ -274,7 +312,7 @@ const GameComponent = () => {
             if(activeRoomRef.current == "landing"){
               const newX = e.global.x;
               const newY = e.global.y
-              const distance = Math.hypot(newX - animation.x, newY - animation.y);
+              const distance = Math.hypot(newX - playerContainer.x, newY - playerContainer.y);
 
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
@@ -283,9 +321,9 @@ const GameComponent = () => {
               if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                 console.log("plot found", e.global.x, e.global.y)
                 setTimeout(() => {
-                  animation.x = 168
-                  animation.y = 428
-                  animation.visible = true;
+                  playerContainer.x = 168
+                  playerContainer.y = 428
+                  playerContainer.visible = true;
                   mainbg.visible = true;
                   
               setActiveRoom("base")
@@ -298,64 +336,75 @@ const GameComponent = () => {
                   if(animating){
                     gsapanimation.pause(); // Stop animation without destroying it
                     let target = gsapanimation.targets()[0]; // Get the animated element
-                  animation.x = gsap.getProperty(target, "x"); // Get the last 'x' position
-                  animation.y = gsap.getProperty(target, "y"); // Get the last 'y' position
-                  console.log("gsap",animation.x,animation.y)
-                  WalkingSprites.forEach(sprite => {
-                    sprite.visible = false;
-                    sprite.x = animation.x ;
-                    sprite.y = animation.y ;
-                    sprite.stop();
-                  })
+                    playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
+                    playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
+                  console.log("gsap",playerContainer.x,playerContainer.y)
+                  playerContainer.removeChildAt(2)
+
+                  // const WalkingSprites = 
+                  // WalkingSprites.forEach(sprite => {
+                  //   sprite.visible = false;
+                  //   sprite.x = playerContainer.x ;
+                  //   sprite.y = playerContainer.y ;
+                  //   sprite.stop();
+                  // })
                   }
                   animating = true;
-                  animation.visible = false;
+                  // playerContainer.visible = false;
                   // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
                   // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
                   let _currentAvatarAngle = currentAvatarAngle <  8 ? currentAvatarAngle : 0
-                  if (WalkingSprites[_currentAvatarAngle]) {
-                    let sprite = WalkingSprites[_currentAvatarAngle];
-                    sprite.visible = true;
-                    sprite.play();
-                    socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle });
+                  // if (WalkingSprites[_currentAvatarAngle]) {
+                  //   let sprite = WalkingSprites[_currentAvatarAngle];
+                  //   sprite.visible = true;
+                  //   sprite.play();
+
+                  playerContainer.children[0].visible = false;
+                  playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
+                  playerContainer.children[2].play();
+                  playerContainer.children[2].visible = true;
+                  
+                  socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom});
                 
-                    gsapanimation = gsap.to(sprite, {
+                    gsapanimation = gsap.to(playerContainer, {
                         duration: duration,
                         x: newX - 25,
                         y: newY - 50,
                         ease: "none",
                         
                         onComplete: () => {
-                          WalkingSprites.forEach(sprite => {
-                            sprite.visible = false;
+                          playerContainer.children[0].visible = true;
+                          playerContainer.removeChildAt(2)
+                        //   WalkingSprites.forEach(sprite => {
+                        //     sprite.visible = false;
                             
-                            sprite.stop();
-                            if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
-                              animation.x = 162;
-                              animation.y = 428;
-                              sprite.x = 162;
-                              sprite.y = 428;
-                            }
-                            else{
-                              sprite.x = newX - 25;
-                            sprite.y = newY - 50;
-                            }
-                        });
-                        animation.x = newX - 25;
-                        animation.y = newY - 50;
+                        //     sprite.stop();
+                        //     if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
+                        //       playerContainer.x = 162;
+                        //       playerContainer.y = 428;
+                        //       sprite.x = 162;
+                        //       sprite.y = 428;
+                        //     }
+                        //     else{
+                        //       sprite.x = newX - 25;
+                        //     sprite.y = newY - 50;
+                        //     }
+                        // });
+                        playerContainer.x = newX - 25;
+                        playerContainer.y = newY - 50;
                         if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
-                          animation.x = 162;
-                          animation.y = 428;
-                          WalkingSprites[_currentAvatarAngle].x = 162;
-                          WalkingSprites[_currentAvatarAngle].y = 428;
+                          playerContainer.x = 162;
+                          playerContainer.y = 428;
+                          // WalkingSprites[_currentAvatarAngle].x = 162;
+                          // WalkingSprites[_currentAvatarAngle].y = 428;
                         }
-                        animation.visible = true;
+                        // playerContainer.visible = true;
                         animating = false;
       
                         }
                     });
 
-                }
+                // }
                 setTimeout(() => {
                   
               }, duration * 1000);
@@ -373,13 +422,13 @@ const GameComponent = () => {
             const newX = e.global.x;
             const newY = e.global.y
             // Calculate distance
-            const distance = Math.hypot(newX - animation.x, newY - animation.y);
+            const distance = Math.hypot(newX - playerContainer.x, newY - playerContainer.y);
 
             // Compute duration dynamically (seconds)
             const duration = distance / 100;
             if(isPointInPolygon({ x: newX, y: newY }, backtoLanding)){
               setTimeout(() => {
-                animation.visible = false;
+                playerContainer.visible = false;
                 mainbg.visible = false;
                 bankbg.visible = false;
                 setActiveRoom("landing")
@@ -389,7 +438,7 @@ const GameComponent = () => {
 
             if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
               setTimeout(() => {
-                animation.visible = false;
+                playerContainer.visible = false;
                 mainbg.visible = false;
                 bankbg.visible = true;
                 setActiveRoom("bank")
@@ -399,65 +448,75 @@ const GameComponent = () => {
 
 
             if (isPointInPolygon({ x: newX, y: newY }, restrictedArea)) {
-              animation.visible = false;
+              // playerContainer.visible = false;
               if(animating){
                 gsapanimation.pause(); // Stop animation without destroying it
                 let target = gsapanimation.targets()[0]; // Get the animated element
-              animation.x = gsap.getProperty(target, "x"); // Get the last 'x' position
-              animation.y = gsap.getProperty(target, "y"); // Get the last 'y' position
-              console.log("gsap",animation.x,animation.y)
-              WalkingSprites.forEach(sprite => {
-                sprite.visible = false;
-                sprite.x = animation.x ;
-                sprite.y = animation.y ;
-                sprite.stop();
-            });
+                playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
+                playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
+              console.log("gsap",playerContainer.x,playerContainer.y)
+              playerContainer.removeChildAt(2)
+
+            //   WalkingSprites.forEach(sprite => {
+            //     sprite.visible = false;
+            //     sprite.x = playerContainer.x ;
+            //     sprite.y = playerContainer.y ;
+            //     sprite.stop();
+            // });
               }
               animating = true;
               // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
               // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
               let _currentAvatarAngle = currentAvatarAngle <  8 ? currentAvatarAngle : 0
-              if (WalkingSprites[_currentAvatarAngle]) {
-                let sprite = WalkingSprites[_currentAvatarAngle];
-                sprite.visible = true;
-                sprite.play();
+              // if (WalkingSprites[_currentAvatarAngle]) {
+              //   let sprite = WalkingSprites[_currentAvatarAngle];
+              //   sprite.visible = true;
+              //   sprite.play();
+
+              playerContainer.children[0].visible = false;
+              playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
+              playerContainer.children[2].play();
+              playerContainer.children[2].visible = true;
+
                 socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle });
             
-                gsapanimation =  gsap.to(sprite, {
+                gsapanimation =  gsap.to(playerContainer, {
                     duration: duration,
                     x: newX - 25,
                     y: newY - 50,
                     ease: "none",
                     onComplete: () => {
-                      WalkingSprites.forEach(sprite => {
-                        sprite.visible = false;
-                        if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
-                          sprite.x = 1245;
-                          sprite.y = 241;
-                        }
-                        else{
-                          sprite.x = newX - 25;
-                          sprite.y = newY - 50;
-                        }
+                    //   WalkingSprites.forEach(sprite => {
+                    //     sprite.visible = false;
+                    //     if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
+                    //       sprite.x = 1245;
+                    //       sprite.y = 241;
+                    //     }
+                    //     else{
+                    //       sprite.x = newX - 25;
+                    //       sprite.y = newY - 50;
+                    //     }
                        
-                        sprite.stop();
-                    });
-                    
+                    //     sprite.stop();
+                    // });
+                    playerContainer.children[0].visible = true;
+                    playerContainer.removeChildAt(2)
+
                     if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
-                      animation.x = 1299 - 55
-                      animation.y = 291 - 50
-                      WalkingSprites[_currentAvatarAngle].x = 1245;
-                      WalkingSprites[_currentAvatarAngle].y = 241;
+                      playerContainer.x = 1299 - 55
+                      playerContainer.y = 291 - 50
+                      // WalkingSprites[_currentAvatarAngle].x = 1245;
+                      // WalkingSprites[_currentAvatarAngle].y = 241;
                     }
                     else{
-                      animation.x = newX - 25;
-                    animation.y = newY - 50;
+                      playerContainer.x = newX - 25;
+                      playerContainer.y = newY - 50;
                     }
                     if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
-                      animation.visible = false;
+                      playerContainer.visible = false;
                     }
                     else{
-                      animation.visible = true;
+                      playerContainer.visible = true;
       
                     }
                     animating = false;
@@ -465,7 +524,7 @@ const GameComponent = () => {
                     }
                 });
 
-            }
+            // }
           //   setTimeout(() => {
               
           // }, duration * 1000);
@@ -488,7 +547,7 @@ const GameComponent = () => {
             const duration = distance / 100;
             if(isPointInPolygon({ x: newX, y: newY }, bankBack)){
               setTimeout(() => {
-                animation.visible = true;
+                playerContainer.visible = true;
                 mainbg.visible = true;
                 bankbg.visible = false;
                 setActiveRoom("base")
@@ -502,7 +561,7 @@ const GameComponent = () => {
             // animatedSprite.visible = false;
             // bg.visible = false;
             animatedBarSprite.visible = false;
-            animation.visible = true;
+            playerContainer.visible = true;
         
 
             // app.stage.addChild(avatar); // Add background first (so it's behind everything)
@@ -528,6 +587,11 @@ const GameComponent = () => {
             for (const id in data) {
               if (id === user._id) continue;
               const pos = data[id];
+              if (pos.activeRoom !== activeRoom) {
+                app.stage.removeChild(players.current[id]); 
+                delete players.current[id];
+              };
+
               const _rotationFrames = [
                 "0.png",
                 "45.png",
@@ -541,78 +605,109 @@ const GameComponent = () => {
               ]
               if (!players.current[id]) {
 
-                const p = new Sprite(sheet.textures[_rotationFrames[6]]);
+                const p = new Container()
+                
+                const s = new Sprite(sheet.textures[_rotationFrames[6]]);
       
-                p.scale = 0.08
+                s.scale = 0.08
+
                 p.x = 650;
                 p.y = 400;
                 p.zIndex = 99;
+                p.addChild(s)
+
+                const quickChatContainer = new Container();
+          
+          
+                const nameText = new Text(pos.quickChat, {
+                  fontSize: 16,
+                  wordWrap: true,
+                  align: "center",
+                  wordWrapWidth: 10,
+                  fill: 0x000000
+                });
+                nameText.anchor.set(0.1, 1);
+                // nameText.y = -5;
+                nameText.l
+                // const bounds = nameText.getLocalBounds();
+                // nameText
+                bubble.width =  2200
+                bubble.height = pos.quickChat ? pos.quickChat.length > 20 ? 1000 : 500 : 500
+                quickChatContainer.addChild(bubble)
+                quickChatContainer.addChild(nameText)
+                quickChatContainer.visible = pos.quickChat ? true : false;
                 app.stage.addChild(p);
+                app.stage.addChild(quickChatContainer);
                 players.current[id] = p;
               }
 
-              if (!playersWalking.current[id]) {
+              // if (!playersWalking.current[id]) {
 
-              const WalkingSprites = []; // Store all sprites here
+          //     const WalkingSprites = []; // Store all sprites here
 
-          for (let angle = 0; angle <= 315; angle += 45) {
+          // for (let angle = 0; angle <= 315; angle += 45) {
 
-              const sheet = await Assets.load(`/assets/${angle}Walk.json`);
-              const frames = [];
+          //     const sheet = await Assets.load(`/assets/${angle}Walk.json`);
+          //     const frames = [];
            
-              for (let i = 1; i <= 30; i++) {
-                frames.push(sheet.textures[`Walk${i}.png`]);
-            }
-              console.log("WalkingSprites", angle,frames)
+          //     for (let i = 1; i <= 30; i++) {
+          //       frames.push(sheet.textures[`Walk${i}.png`]);
+          //   }
+          //     console.log("WalkingSprites", angle,frames)
           
-              // Create an AnimatedSprite
-              const sprite = new AnimatedSprite(frames);
+          //     // Create an AnimatedSprite
+          //     const sprite = new AnimatedSprite(frames);
               
-              // Set animation properties
-              sprite.animationSpeed = 1;
-              sprite.loop = true;
-              sprite.scale = 0.08;
-              sprite.x = animation.x;
-              sprite.y = animation.y;
-              sprite.visible = false;
+          //     // Set animation properties
+          //     sprite.animationSpeed = 1;
+          //     sprite.loop = true;
+          //     sprite.scale = 0.08;
+          //     sprite.x = animation.x;
+          //     sprite.y = animation.y;
+          //     sprite.visible = false;
 
-              app.stage.addChild(sprite);
+          //     app.stage.addChild(sprite);
               
-              // Store it in an object with its angle as the key
-              WalkingSprites.push(sprite);
+          //     // Store it in an object with its angle as the key
+          //     WalkingSprites.push(sprite);
 
-          }
-        playersWalking.current[id] = WalkingSprites
-              }
+          // }
+              //   playersWalking.current[id] = WalkingSprites
+              // }
 
               const distance = Math.hypot(pos.x - players.current[id].x, pos.y - players.current[id].y);
 
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
 
-              players.current[id].texture = sheet.textures[_rotationFrames[parseInt(pos.angle)]];
+              players.current[id].children[0].texture = sheet.textures[_rotationFrames[parseInt(pos.angle)]];
               if(players.current[id].x != pos.x){
-                players.current[id].visible = false;
-                playersWalking.current[id][pos.angle].visible = true;
+                players.current[id].children[0].visible = false;
+                if(players.current[id].children[2]){
+                  players.current[id].removeChildAt(2);
+                }
+                
+                players.current[id].addChild(WalkingSprites[pos.angle]) 
+                players.current[id].children[2].play();
+                players.current[id].children[2].visible = true;
               // players.current[id]
 
-             
-            let sprite = playersWalking.current[id][pos.angle];
-            sprite.visible = true;
-            sprite.play();
-              gsap.to(sprite, {
+              
+              gsap.to(players.current[id], {
                 duration: duration,
                 x: pos.x,
                 y: pos.y, 
                 ease: "none",
+                
                 onComplete: () => {
-                  playersWalking.current[id].forEach(sprite => {
-                    sprite.visible = false;                
-                    sprite.x = pos.x;
-                    sprite.y = pos.y ;               
-                    sprite.stop();
-                });
-              players.current[id].visible = true;
+                //   playersWalking.current[id].forEach(sprite => {
+                //     sprite.visible = false;                
+                //     sprite.x = pos.x;
+                //     sprite.y = pos.y ;               
+                //     sprite.stop();
+                // });
+              players.current[id].children[0].visible = true;
+              players.current[id].removeChildAt(2);
               players.current[id].x = pos.x;
               players.current[id].y = pos.y;
 
@@ -625,9 +720,9 @@ const GameComponent = () => {
             for (const id in players.current) {
               if (!data[id]) {
                 app.stage.removeChild(players.current[id]);
-                app.stage.removeChild(playersWalking.current[id]);
+                // app.stage.removeChild(playersWalking.current[id]);
                 delete players.current[id];
-                delete playersWalking.current[id];
+                // delete playersWalking.current[id];
               }
             }
           });
