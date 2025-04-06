@@ -1,11 +1,11 @@
 'use client';
 
 import { ContractContext } from "@/contexts/ContractContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const MenuBar = () => {
-  const {setChatOpen,chatOpen, setAirTokBot,airTokBot}=useContext(ContractContext)
-
+  const {setChatOpen,chatOpen,setQuickChat, setAirTokBot,airTokBot}=useContext(ContractContext)
+  const [quickText,setQuickText] = useState("")
   const handleAirBotClick = () => {
     setAirTokBot(!airTokBot)
     }
@@ -204,8 +204,8 @@ const MenuBar = () => {
         </div>
 
         <div className="quickchat-box">
-          <input type="text" placeholder="Quick Chat..." />
-          <div className="icon-btn" style={{"width": "40px", "height": "40px"}}>
+          <input type="text" placeholder="Quick Chat..." value={quickText} onChange={(e) => setQuickText(e.target.value)} />
+          <div className="icon-btn" style={{"width": "40px", "height": "40px"}} onClick={() => {setQuickChat(quickText) ; setQuickText("")}}>
             <img
               src="/assets/icons/ArrowIcon.png"
               className="icon-img"
@@ -235,13 +235,13 @@ const MenuBar = () => {
             alt="Wallet"
           />
         </div>
-        <div className="icon-btn" onClick={() => handleAirBotClick()}>
+        {/* <div className="icon-btn" onClick={() => handleAirBotClick()}>
           <img
             src="/assets/icons/ChatIcon.png"
             className="icon-img"
             alt="Wallet"
           />
-        </div>
+        </div> */}
         <div className="icon-btn" id="setting_btn" onClick={() => handleSettingsiconClick()}>
           <img
             src="/assets/icons/SettingsIcon.png"

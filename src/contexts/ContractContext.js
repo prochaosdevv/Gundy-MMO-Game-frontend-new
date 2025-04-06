@@ -12,7 +12,8 @@ export const ContractContext = createContext();
 
 const ContractContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [quickChat, setQuickChat] = useState(null);
+  const [quickChat, setQuickChat] = useState(""); 
+  
   const [showChatIcon, setShowChatIcon] = useState(false);
   const [allUser, setAllUser] = useState([]);
   const [chatOpen, setChatOpen] = useState(false);
@@ -118,7 +119,7 @@ useEffect(()=>{
     getAd()
 },[])
   return (
-    <ContractContext.Provider value={{user,allUser,getMe,getAllUsers,setFreindOpen,setChatOpen,chatOpen,freindOpen,activeChatTab,activeRoom,setActiveRoom,activeRoomRef, setActiveChatId,activeChatId,ad, setActiveChatTab,showChatIcon, setShowChatIcon,activeChatUsername, setActiveChatUsername,setActiveVoiceUsers,activeVoiceUsers,airTokBot, setAirTokBot}}>
+    <ContractContext.Provider value={{user,allUser,getMe,getAllUsers,setFreindOpen,setChatOpen,chatOpen,freindOpen,activeChatTab,activeRoom,setActiveRoom,activeRoomRef, setActiveChatId,activeChatId,ad, setActiveChatTab,showChatIcon, setShowChatIcon,activeChatUsername, setActiveChatUsername,setActiveVoiceUsers,activeVoiceUsers,airTokBot, setAirTokBot,quickChat,setQuickChat}}>
       {children}
     </ContractContext.Provider>
   );

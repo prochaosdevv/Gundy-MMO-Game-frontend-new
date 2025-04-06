@@ -14,7 +14,7 @@ const GameComponent = () => {
   const players = useRef({}); 
   const playersWalking = useRef({})
   const userPos = useRef({})
-  const {activeRoom,setActiveRoom,quickChat,setQuickChat,activeRoomRef,setShowChatIcon,user} = useContext(ContractContext);
+  const {activeRoom,setActiveRoom,quickChat,setQuickChat,setAirTokBot,activeRoomRef,setShowChatIcon,user} = useContext(ContractContext);
  
   useEffect(() => {
     let isMounted = true; // Track mounting state
@@ -70,6 +70,19 @@ const GameComponent = () => {
           bankbg.zIndex = 0; // Fit screen height
           bankbg.visible = false;
           app.stage.addChild(bankbg);
+
+          const aitoktexture = await Assets.load("/assets/AirTok.png");
+          const airtokAvatar = new Sprite(aitoktexture);
+          airtokAvatar.x = 650;
+          airtokAvatar.y = 550;
+          airtokAvatar.scale = 0.3;
+          // airtokAvatar.width = app.screen.width; // Fit screen width
+          // airtokAvatar.height = app.screen.height; // Fit screen height
+          airtokAvatar.zIndex = 9999; // Fit screen height
+          airtokAvatar.visible = false;
+        
+          app.stage.addChild(airtokAvatar);
+          
           
 
 
@@ -263,6 +276,12 @@ bubble.anchor = new Point(0.2, 0.7);
             return intersects % 2 !== 0; // Odd = inside, Even = outside
           }
 
+          const airtok = [
+            { "x": 650 , "y": 550 },
+            { "x": 730, "y": 550 },
+            { "x": 730, "y": 710 },
+            { "x": 650, "y": 710 }
+          ]
           const baseCity = [
             { "x": 1065 , "y": 281 },
             { "x": 1140, "y": 257 },
@@ -310,6 +329,7 @@ bubble.anchor = new Point(0.2, 0.7);
           app.stage.addEventListener('pointerdown', (e) => {
             console.log("plot room",activeRoomRef.current)
             if(activeRoomRef.current == "landing"){
+
               const newX = e.global.x;
               const newY = e.global.y
               const distance = Math.hypot(newX - playerContainer.x, newY - playerContainer.y);
@@ -317,7 +337,10 @@ bubble.anchor = new Point(0.2, 0.7);
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
               console.log("plot landing", e.global.x, e.global.y)
-
+              if(isPointInPolygon({x: newX, y: newY},airtok)){
+                setAirTokBot(true);
+                return false;
+              }
               if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                 console.log("plot found", e.global.x, e.global.y)
                 setTimeout(() => {
@@ -562,7 +585,7 @@ bubble.anchor = new Point(0.2, 0.7);
             // bg.visible = false;
             animatedBarSprite.visible = false;
             playerContainer.visible = true;
-        
+            airtokAvatar.visible = true
 
             // app.stage.addChild(avatar); // Add background first (so it's behind everything)
 
@@ -580,6 +603,8 @@ bubble.anchor = new Point(0.2, 0.7);
             if (menubar) {
               menubar.style.visibility = "visible";
             }
+            appRef.current = app;
+
           }, 2500)
 
           socket.on("playersUpdate", async (data) => {
@@ -756,9 +781,21 @@ bubble.anchor = new Point(0.2, 0.7);
   }, [user]);
 
   useEffect(() => {
+    if(quickChat && appRef.current){
+        const player = appRef.current.stage.children[4] ; 
+        console.log(player)
+        player.children[1].visible = true;
+        player.children[1].children[1].text = quickChat;
+    }
+  },[quickChat,appRef])
+
+  useEffect(() => {
     console.log("players",players)
 
   },[players])
+
+
+
 
 
   return (<>

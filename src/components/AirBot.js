@@ -37,9 +37,9 @@ const AirBot = () => {
 
   return (
     <div id="air_bot" className="air_bot">
-      <div className="cross_box" style={{paddingRight:"5px"}}>
+      <div className="cross_box" style={{paddingRight:"5px",zIndex: 999999,position:"relative"}}  onClick={() => setAirTokBot(false)}>
         <div className="cross_bg" style={{position:"relative"}}>
-          <img src="/assets/cross.png" className="cross_btn" alt="Close" onClick={() => setAirTokBot(false)} />
+          <img src="/assets/cross.png" className="cross_btn" alt="Close" />
         </div>
       </div>
       <p className="chat-header" style={{marginTop:"-15px"}}>AIRTOK BOT</p>
