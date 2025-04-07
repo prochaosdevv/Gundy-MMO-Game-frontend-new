@@ -611,7 +611,9 @@ bubble.anchor = new Point(0.2, 0.7);
           }, 2500)
 
           socket.on("playersUpdate", async (data) => {
-           
+           if(!app){
+            return;
+           }
             for (const id in data) {
               if (id === user._id) continue;
               const pos = data[id];
@@ -816,7 +818,7 @@ bubble.anchor = new Point(0.2, 0.7);
         }
         else{
           player.children[1].visible = false;
-        player.children[1].children[1].text = "";
+          player.children[1].children[1].text = "";
         }
         
         
