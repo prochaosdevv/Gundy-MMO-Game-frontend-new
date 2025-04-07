@@ -80,6 +80,13 @@ const MenuBar = () => {
         }
     }
 
+    const handleQuickchat = () => {
+      setQuickChat(quickText) ; setQuickText("");
+      setTimeout(() => {
+        setQuickChat(false)
+      }, 5000);
+    }
+
     const  handleFriendiconClick = () => {
         const box = document.getElementById("friend_popup");
         if (box.style.display === "block") {
@@ -205,7 +212,7 @@ const MenuBar = () => {
 
         <div className="quickchat-box">
           <input type="text" placeholder="Quick Chat..." value={quickText} onChange={(e) => setQuickText(e.target.value)} />
-          <div className="icon-btn" style={{"width": "40px", "height": "40px"}} onClick={() => {setQuickChat(quickText) ; setQuickText("")}}>
+          <div className="icon-btn" style={{"width": "40px", "height": "40px"}} onClick={() => handleQuickchat()}>
             <img
               src="/assets/icons/ArrowIcon.png"
               className="icon-img"

@@ -1,4 +1,5 @@
 "use client";
+import { ContractContext } from "@/contexts/ContractContext";
 import { copyToClipboard } from "@/utils/functions";
 import {
   Box,
@@ -11,7 +12,7 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const steps = [
   "Awaiting Deposit",
@@ -30,7 +31,7 @@ const BankContainer = () => {
   const [chooseBlockchain, setChooseBlockchain] = useState(1);
   const [chooseBlockchain_2, setChooseBlockchain_2] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-
+  const {setActiveRoom} = useContext(ContractContext)
   const handleNext = () => {
     setActiveStep((prevStep) => prevStep + 1);
   };
@@ -72,7 +73,7 @@ const BankContainer = () => {
   };
   return (
 <>
-<div style={{position:"absolute",top:"18px",left:"18px",cursor:"pointer"}} onClick={handleStepBack}>
+<div style={{position:"absolute",top:"18px",left:"18px",cursor:"pointer"}} onClick={() => setActiveRoom('base')}>
           <img src="/assets/exit_btn.png" style={{width:"80px"}} alt="Chat" />
         </div>
 <Box  sx={{

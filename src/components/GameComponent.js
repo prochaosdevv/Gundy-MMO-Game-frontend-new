@@ -202,7 +202,7 @@ bubble.anchor = new Point(0.2, 0.7);
               "0.png"
             ]
             currentAvatarAngle = frameIndex;
-            socket.emit("move", { x: playerContainer.x, y: playerContainer.y,angle: frameIndex , activeRoom: activeRoom });
+            socket.emit("move", { x: playerContainer.x, y: playerContainer.y,angle: frameIndex , activeRoom: activeRoom, quickChat: quickChat });
 
             playerContainer.children[0].texture = sheet.textures[rotationFrames[frameIndex]];
           }
@@ -387,7 +387,7 @@ bubble.anchor = new Point(0.2, 0.7);
                   playerContainer.children[2].play();
                   playerContainer.children[2].visible = true;
                   
-                  socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom});
+                  socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom,  quickChat: quickChat});
                 
                     gsapanimation = gsap.to(playerContainer, {
                         duration: duration,
@@ -446,7 +446,10 @@ bubble.anchor = new Point(0.2, 0.7);
             const newY = e.global.y
             // Calculate distance
             const distance = Math.hypot(newX - playerContainer.x, newY - playerContainer.y);
-
+            if(isPointInPolygon({x: newX, y: newY},airtok)){
+              setAirTokBot(true);
+              return false;
+            }
             // Compute duration dynamically (seconds)
             const duration = distance / 100;
             if(isPointInPolygon({ x: newX, y: newY }, backtoLanding)){
@@ -501,7 +504,7 @@ bubble.anchor = new Point(0.2, 0.7);
               playerContainer.children[2].play();
               playerContainer.children[2].visible = true;
 
-                socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle });
+                socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom, quickChat: quickChat});
             
                 gsapanimation =  gsap.to(playerContainer, {
                     duration: duration,
@@ -660,7 +663,7 @@ bubble.anchor = new Point(0.2, 0.7);
                 bubble.height = pos.quickChat ? pos.quickChat.length > 20 ? 1000 : 500 : 500
                 quickChatContainer.addChild(bubble)
                 quickChatContainer.addChild(nameText)
-                quickChatContainer.visible = pos.quickChat ? true : false;
+                quickChatContainer.visible = pos.quickChat && pos.quickChat != "" ? true : false;
                 app.stage.addChild(p);
                 app.stage.addChild(quickChatContainer);
                 players.current[id] = p;
@@ -781,11 +784,44 @@ bubble.anchor = new Point(0.2, 0.7);
   }, [user]);
 
   useEffect(() => {
-    if(quickChat && appRef.current){
+    if(activeRoom == "bank"){
+      console.log("room elements",appRef.current.stage)
+      const airtok = appRef.current.stage.children[5] ; 
+      
+      airtok.visible = false;
+    }
+    if(activeRoom == "base"){
+      const bankBg = appRef.current.stage.children[2] ;       
+      bankBg.visible = false;
+
+
+      const baseBg = appRef.current.stage.children[1] ;       
+      baseBg.visible = true;
+
+      const player = appRef.current.stage.children[4] ; 
+      player.visible = true;
+
+      const airtok = appRef.current.stage.children[5] ; 
+      
+      airtok.visible = true;
+    }
+  },[activeRoom])
+  useEffect(() => {
+    if(appRef.current){
         const player = appRef.current.stage.children[4] ; 
         console.log(player)
-        player.children[1].visible = true;
-        player.children[1].children[1].text = quickChat;
+        if(quickChat){
+          player.children[1].visible = true;
+          player.children[1].children[1].text = quickChat;
+        }
+        else{
+          player.children[1].visible = false;
+        player.children[1].children[1].text = "";
+        }
+        
+        
+    }else{
+
     }
   },[quickChat,appRef])
 
