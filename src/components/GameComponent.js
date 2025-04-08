@@ -185,7 +185,7 @@ const GameComponent = () => {
               "0.png"
             ]
             currentAvatarAngle = frameIndex;
-            socket.emit("move", { x: playerContainer.x, y: playerContainer.y, angle: frameIndex, activeRoom: activeRoom, quickChat: quickChat });
+            // socket.emit("rotate", {angle: frameIndex});
 
             playerContainer.children[0].texture = sheet.textures[rotationFrames[frameIndex]];
           }
