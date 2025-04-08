@@ -626,6 +626,7 @@ const GameComponent = () => {
               if (pos.activeRoom !== activeRoom) {
                 app.stage.removeChild(players.current[id]);
                 delete players.current[id];
+                return;
               };
 
               const _rotationFrames = [
