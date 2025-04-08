@@ -16,6 +16,7 @@ const GameComponent = () => {
   const userPos = useRef({})
   const { activeRoom, setActiveRoom, quickChat, setQuickChat, setAirTokBot, activeRoomRef, setShowChatIcon, user } = useContext(ContractContext);
   const rotationIndex = useRef(0)
+   
   useEffect(() => {
     let isMounted = true; // Track mounting state
     let currentAvatarAngle = 0;
@@ -623,11 +624,12 @@ const GameComponent = () => {
             for (const id in data) {
               if (id === user._id) continue;
               const pos = data[id];
-              if (pos.activeRoom !== activeRoom) {
+              if (pos.activeRoom !== activeRoomRef.current) {
                 app.stage.removeChild(players.current[id]);
                 delete players.current[id];
                 return;
               };
+              console.log('activeRoom',activeRoomRef.current)
 
               const _rotationFrames = [
                 "0.png",
@@ -640,7 +642,7 @@ const GameComponent = () => {
                 "315.png",
                 "0.png"
               ]
-              if (!players.current[id] && pos.activeRoom == activeRoom) {
+              if (!players.current[id] && pos.activeRoom == activeRoomRef.current) {
 
                 const p = new Container()
 
@@ -836,6 +838,7 @@ const GameComponent = () => {
 
       airtok.visible = true;
     }
+    activeRoomRef.current = activeRoom
   }, [activeRoom])
   async function updateQuickChat() {
 
