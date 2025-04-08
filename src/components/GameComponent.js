@@ -11,16 +11,16 @@ const GameComponent = () => {
   const canvasRef = useRef(null);
   const appRef = useRef(null); // Use ref to persist app instance
   const socketRef = useRef(null);
-  const players = useRef({}); 
+  const players = useRef({});
   const playersWalking = useRef({})
   const userPos = useRef({})
-  const {activeRoom,setActiveRoom,quickChat,setQuickChat,setAirTokBot,activeRoomRef,setShowChatIcon,user} = useContext(ContractContext);
- const rotationIndex = useRef(0)
+  const { activeRoom, setActiveRoom, quickChat, setQuickChat, setAirTokBot, activeRoomRef, setShowChatIcon, user } = useContext(ContractContext);
+  const rotationIndex = useRef(0)
   useEffect(() => {
     let isMounted = true; // Track mounting state
     let currentAvatarAngle = 0;
     let animating = false;
-    let gsapanimation ;
+    let gsapanimation;
     const access_token = window.localStorage.getItem("access_token");
 
     const socket = io("https://api.gundys.world", {
@@ -29,7 +29,7 @@ const GameComponent = () => {
     socketRef.current = socket;
     const initApp = async () => {
       try {
-      
+
 
         // Initialize Application
         const app = new Application();
@@ -81,10 +81,10 @@ const GameComponent = () => {
           // airtokAvatar.height = app.screen.height; // Fit screen height
           airtokAvatar.zIndex = 9999; // Fit screen height
           airtokAvatar.visible = false;
-        
+
           app.stage.addChild(airtokAvatar);
-          
-          
+
+
 
 
           const bgTexture = await Assets.load('/assets/landing.png');
@@ -105,38 +105,8 @@ const GameComponent = () => {
           animatedBarSprite.animationSpeed = 1.8; // Make animation faster
           animatedBarSprite.zIndex = 0;
           app.stage.addChild(animatedBarSprite);
-          const quickChatContainer = new Container();
-// Load the texture (already in your loader or from file)
-const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
-
-// Create a resizable background using 9-slice scaling
-const bubble = new NineSlicePlane(bubbleTexture, 15, 15, 15, 15); 
-// These 4 values are your left, top, right, bottom edge slices
-bubble.name = "bubble";
-bubble.scale = 0.08
-bubble.anchor = new Point(0.2, 0.7);
 
 
-          
-          
-          const nameText = new Text(quickChat, {
-            fontSize: 16,
-            wordWrap: true,
-            align: "center",
-            wordWrapWidth: 10,
-            fill: 0x000000
-          });
-          nameText.anchor.set(0.1, 1);
-          // nameText.y = -5;
-          nameText.name = "quickchattext"
-          // const bounds = nameText.getLocalBounds();
-          // nameText
-          bubble.width =  2200
-          bubble.height = quickChat ? quickChat.length > 20 ? 1000 : 500 : 500
-          quickChatContainer.addChild(bubble)
-          quickChatContainer.addChild(nameText)
-          quickChatContainer.visible = false;
-          quickChatContainer.name = 'quickchat';
           const playerContainer = new Container();
           const sheet = await Assets.load('/assets/texture.json');
 
@@ -144,14 +114,14 @@ bubble.anchor = new Point(0.2, 0.7);
           const animation = new Sprite(sheet.textures["0.png"]);
           console.log(animation)
           animation.scale = 0.08
-          
+
 
           // playerContainer.sprite = animation
- 
-          
+
+
           playerContainer.addChild(animation);
-          playerContainer.addChild(quickChatContainer);
-          
+          // playerContainer.addChild(quickChatContainer);
+
           playerContainer.x = 650;
           playerContainer.y = 400;
           playerContainer.zIndex = 99;
@@ -166,7 +136,7 @@ bubble.anchor = new Point(0.2, 0.7);
           // nameText.y = 400;
           // app.stage.addChild(nameText);
 
-       
+
           // app.stage.addChild(animation);
           // Function to get the correct mouse position relative to the canvas
           function getMousePos(event) {
@@ -207,7 +177,7 @@ bubble.anchor = new Point(0.2, 0.7);
               "0.png"
             ]
             currentAvatarAngle = frameIndex;
-            socket.emit("move", { x: playerContainer.x, y: playerContainer.y,angle: frameIndex , activeRoom: activeRoom, quickChat: quickChat });
+            socket.emit("move", { x: playerContainer.x, y: playerContainer.y, angle: frameIndex, activeRoom: activeRoom, quickChat: quickChat });
 
             playerContainer.children[0].texture = sheet.textures[rotationFrames[frameIndex]];
           }
@@ -217,36 +187,36 @@ bubble.anchor = new Point(0.2, 0.7);
           const WalkingSprites = []; // Store all sprites here
 
           for (let angle = 0; angle <= 315; angle += 45) {
-              const sheet = await Assets.load(`/assets/${angle}Walk.json`);
-              const frames = [];
-          
-              // for (let i = 1; i <= 7; i++) {
-              //     frames.push(sheet.textures[`${i}.png`]);
-              // }
-              for (let i = 1; i <= 30; i++) {
-                frames.push(sheet.textures[`Walk${i}.png`]);
+            const sheet = await Assets.load(`/assets/${angle}Walk.json`);
+            const frames = [];
+
+            // for (let i = 1; i <= 7; i++) {
+            //     frames.push(sheet.textures[`${i}.png`]);
+            // }
+            for (let i = 1; i <= 30; i++) {
+              frames.push(sheet.textures[`Walk${i}.png`]);
             }
-              // console.log("WalkingSprites", angle,frames)
-          
-              // Create an AnimatedSprite
-              const sprite = new AnimatedSprite(frames);
-              
-              // Set animation properties
-              sprite.animationSpeed = 1;
-              sprite.loop = true;
-              sprite.scale = 0.08;
-              
-              // sprite.x = playerContainer.x;
-              // sprite.y = playerContainer.y;
-              sprite.visible = false;
-              
-              // playerContainer.addChild(sprite);
-              
-              // Store it in an object with its angle as the key
-              WalkingSprites.push(sprite);
+            // console.log("WalkingSprites", angle,frames)
+
+            // Create an AnimatedSprite
+            const sprite = new AnimatedSprite(frames);
+
+            // Set animation properties
+            sprite.animationSpeed = 1;
+            sprite.loop = true;
+            sprite.scale = 0.08;
+
+            // sprite.x = playerContainer.x;
+            // sprite.y = playerContainer.y;
+            sprite.visible = false;
+
+            // playerContainer.addChild(sprite);
+
+            // Store it in an object with its angle as the key
+            WalkingSprites.push(sprite);
           }
-          
-          
+
+
 
           // Listen for mouse movement
           app.stage.addEventListener('mousemove', updateSpriteRotation);
@@ -283,58 +253,58 @@ bubble.anchor = new Point(0.2, 0.7);
           }
 
           const airtok = [
-            { "x": 650 , "y": 550 },
+            { "x": 650, "y": 550 },
             { "x": 730, "y": 550 },
             { "x": 730, "y": 710 },
             { "x": 650, "y": 710 }
           ]
           const baseCity = [
-            { "x": 1065 , "y": 281 },
+            { "x": 1065, "y": 281 },
             { "x": 1140, "y": 257 },
             { "x": 1299, "y": 291 },
             { "x": 1325, "y": 344 },
-            { "x": 1065 , "y": 281 }
+            { "x": 1065, "y": 281 }
           ]
 
           const backtoLanding = [
-            { "x": 43 , "y": 416 },
-            { "x": 141 , "y": 395 },
+            { "x": 43, "y": 416 },
+            { "x": 141, "y": 395 },
             { "x": 200, "y": 437 },
             { "x": 104, "y": 572 },
             { "x": 3, "y": 516 },
-            { "x": 43 , "y": 416 },
+            { "x": 43, "y": 416 },
           ]
 
           const bankGate = [
-            { "x": 981 , "y": 282 },
+            { "x": 981, "y": 282 },
             { "x": 1054, "y": 293 },
             { "x": 1033, "y": 457 },
             { "x": 943, "y": 435 },
           ]
 
           const bankBack = [
-            { "x": 64 , "y": 97 },
+            { "x": 64, "y": 97 },
             { "x": 572, "y": 98 },
             { "x": 68, "y": 558 },
             { "x": 551, "y": 556 },
           ]
 
           const LandingrestrictedArea = [
-            { "x": 4 , "y": 255 },
-            { "x": 390 , "y": 232 },
-            { "x": 423 , "y": 381 },
-            { "x": 947 , "y": 341 },
-            { "x": 1139 , "y": 260 },
-            { "x": 1294 , "y": 284 },
-            { "x": 1323 , "y": 352 }, 
-            { "x": 1393 , "y": 732 },
-            { "x": 9 , "y": 732 },
-            { "x": 4 , "y": 255 },
+            { "x": 4, "y": 255 },
+            { "x": 390, "y": 232 },
+            { "x": 423, "y": 381 },
+            { "x": 947, "y": 341 },
+            { "x": 1139, "y": 260 },
+            { "x": 1294, "y": 284 },
+            { "x": 1323, "y": 352 },
+            { "x": 1393, "y": 732 },
+            { "x": 9, "y": 732 },
+            { "x": 4, "y": 255 },
 
           ]
           app.stage.addEventListener('pointerdown', (e) => {
-            console.log("plot room",activeRoomRef.current)
-            if(activeRoomRef.current == "landing"){
+            console.log("plot room", activeRoomRef.current)
+            if (activeRoomRef.current == "landing") {
 
               const newX = e.global.x;
               const newY = e.global.y
@@ -343,7 +313,7 @@ bubble.anchor = new Point(0.2, 0.7);
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
               console.log("plot landing", e.global.x, e.global.y)
-              if(isPointInPolygon({x: newX, y: newY},airtok)){
+              if (isPointInPolygon({ x: newX, y: newY }, airtok)) {
                 setAirTokBot(true);
                 return false;
               }
@@ -354,24 +324,24 @@ bubble.anchor = new Point(0.2, 0.7);
                   playerContainer.y = 428
                   playerContainer.visible = true;
                   mainbg.visible = true;
-                  
-              setActiveRoom("base")
-                }, duration*1000);
-               
-                }
+
+                  setActiveRoom("base")
+                }, duration * 1000);
+
+              }
 
 
-                if (isPointInPolygon({ x: newX, y: newY }, LandingrestrictedArea)) {
-                  if(animating){
-                    gsapanimation.pause(); // Stop animation without destroying it
-                    let target = gsapanimation.targets()[0]; // Get the animated element
-                    playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
-                    playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
-                  console.log("gsap",playerContainer.x,playerContainer.y);
-                   if(playerContainer.getChildByName('walking')){
+              if (isPointInPolygon({ x: newX, y: newY }, LandingrestrictedArea)) {
+                if (animating) {
+                  gsapanimation.pause(); // Stop animation without destroying it
+                  let target = gsapanimation.targets()[0]; // Get the animated element
+                  playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
+                  playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
+                  console.log("gsap", playerContainer.x, playerContainer.y);
+                  if (playerContainer.getChildByName('walking')) {
                     playerContainer.removeChild(playerContainer.getChildByName('walking'))
-                   }
-                 
+                  }
+
 
                   // const WalkingSprites = 
                   // WalkingSprites.forEach(sprite => {
@@ -380,154 +350,154 @@ bubble.anchor = new Point(0.2, 0.7);
                   //   sprite.y = playerContainer.y ;
                   //   sprite.stop();
                   // })
-                  }
-                  animating = true;
-                  // playerContainer.visible = false;
-                  // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
-                  // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
-                  let _currentAvatarAngle = currentAvatarAngle <  8 ? currentAvatarAngle : 0
-                  // if (WalkingSprites[_currentAvatarAngle]) {
-                  //   let sprite = WalkingSprites[_currentAvatarAngle];
-                  //   sprite.visible = true;
-                  //   sprite.play();
+                }
+                animating = true;
+                // playerContainer.visible = false;
+                // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
+                // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
+                let _currentAvatarAngle = currentAvatarAngle < 8 ? currentAvatarAngle : 0
+                // if (WalkingSprites[_currentAvatarAngle]) {
+                //   let sprite = WalkingSprites[_currentAvatarAngle];
+                //   sprite.visible = true;
+                //   sprite.play();
 
-                  playerContainer.children[0].visible = false;
-                  WalkingSprites[_currentAvatarAngle].name = 'walking'
-                  playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
-                  if(playerContainer.getChildByName("walking")){
-                    playerContainer.getChildByName("walking").play();
-                    playerContainer.getChildByName("walking").visible = true;
-  
+                playerContainer.children[0].visible = false;
+                WalkingSprites[_currentAvatarAngle].name = 'walking'
+                playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
+                if (playerContainer.getChildByName("walking")) {
+                  playerContainer.getChildByName("walking").play();
+                  playerContainer.getChildByName("walking").visible = true;
+
+                }
+
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoom, quickChat: quickChat });
+
+                gsapanimation = gsap.to(playerContainer, {
+                  duration: duration,
+                  x: newX - 25,
+                  y: newY - 50,
+                  ease: "none",
+
+                  onComplete: () => {
+                    playerContainer.children[0].visible = true;
+                    playerContainer.removeChild(playerContainer.getChildByName("walking"))
+                    //   WalkingSprites.forEach(sprite => {
+                    //     sprite.visible = false;
+
+                    //     sprite.stop();
+                    //     if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
+                    //       playerContainer.x = 162;
+                    //       playerContainer.y = 428;
+                    //       sprite.x = 162;
+                    //       sprite.y = 428;
+                    //     }
+                    //     else{
+                    //       sprite.x = newX - 25;
+                    //     sprite.y = newY - 50;
+                    //     }
+                    // });
+                    playerContainer.x = newX - 25;
+                    playerContainer.y = newY - 50;
+                    if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
+                      playerContainer.x = 162;
+                      playerContainer.y = 428;
+                      // WalkingSprites[_currentAvatarAngle].x = 162;
+                      // WalkingSprites[_currentAvatarAngle].y = 428;
+                    }
+                    // playerContainer.visible = true;
+                    animating = false;
+
                   }
-                  
-                  socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom,  quickChat: quickChat});
-                
-                    gsapanimation = gsap.to(playerContainer, {
-                        duration: duration,
-                        x: newX - 25,
-                        y: newY - 50,
-                        ease: "none",
-                        
-                        onComplete: () => {
-                          playerContainer.children[0].visible = true;
-                          playerContainer.removeChild(playerContainer.getChildByName("walking"))
-                        //   WalkingSprites.forEach(sprite => {
-                        //     sprite.visible = false;
-                            
-                        //     sprite.stop();
-                        //     if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
-                        //       playerContainer.x = 162;
-                        //       playerContainer.y = 428;
-                        //       sprite.x = 162;
-                        //       sprite.y = 428;
-                        //     }
-                        //     else{
-                        //       sprite.x = newX - 25;
-                        //     sprite.y = newY - 50;
-                        //     }
-                        // });
-                        playerContainer.x = newX - 25;
-                        playerContainer.y = newY - 50;
-                        if(isPointInPolygon({ x: newX, y: newY }, baseCity)){
-                          playerContainer.x = 162;
-                          playerContainer.y = 428;
-                          // WalkingSprites[_currentAvatarAngle].x = 162;
-                          // WalkingSprites[_currentAvatarAngle].y = 428;
-                        }
-                        // playerContainer.visible = true;
-                        animating = false;
-      
-                        }
-                    });
+                });
 
                 // }
                 setTimeout(() => {
-                  
-              }, duration * 1000);
-    
-               
-                 
-    
+
+                }, duration * 1000);
+
+
+
+
+              }
+
+            }
+
+            if (activeRoomRef.current == "base") {
+
+              console.log("plot base", e.global.x, e.global.y)
+              const newX = e.global.x;
+              const newY = e.global.y
+              // Calculate distance
+              const distance = Math.hypot(newX - playerContainer.x, newY - playerContainer.y);
+              if (isPointInPolygon({ x: newX, y: newY }, airtok)) {
+                setAirTokBot(true);
+                return false;
+              }
+              // Compute duration dynamically (seconds)
+              const duration = distance / 100;
+              if (isPointInPolygon({ x: newX, y: newY }, backtoLanding)) {
+                setTimeout(() => {
+                  playerContainer.visible = false;
+                  mainbg.visible = false;
+                  bankbg.visible = false;
+                  setActiveRoom("landing")
+
+                }, duration * 1000);
+              }
+
+              if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
+                setTimeout(() => {
+                  playerContainer.visible = false;
+                  mainbg.visible = false;
+                  bankbg.visible = true;
+                  setActiveRoom("bank")
+
+                }, duration * 1000);
+              }
+
+
+              if (isPointInPolygon({ x: newX, y: newY }, restrictedArea)) {
+                // playerContainer.visible = false;
+                if (animating) {
+                  gsapanimation.pause(); // Stop animation without destroying it
+                  let target = gsapanimation.targets()[0]; // Get the animated element
+                  playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
+                  playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
+                  console.log("gsap", playerContainer.x, playerContainer.y)
+                  playerContainer.removeChildAt(2)
+
+                  //   WalkingSprites.forEach(sprite => {
+                  //     sprite.visible = false;
+                  //     sprite.x = playerContainer.x ;
+                  //     sprite.y = playerContainer.y ;
+                  //     sprite.stop();
+                  // });
                 }
-          
-            }
+                animating = true;
+                // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
+                // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
+                let _currentAvatarAngle = currentAvatarAngle < 8 ? currentAvatarAngle : 0
+                // if (WalkingSprites[_currentAvatarAngle]) {
+                //   let sprite = WalkingSprites[_currentAvatarAngle];
+                //   sprite.visible = true;
+                //   sprite.play();
 
-            if(activeRoomRef.current == "base"){
+                playerContainer.children[0].visible = false;
+                WalkingSprites[_currentAvatarAngle].name = 'walking'
+                playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
+                if (playerContainer.getChildByName('walking')) {
+                  playerContainer.getChildByName('walking').play();
+                  playerContainer.getChildByName('walking').visible = true;
+                }
 
-            console.log("plot base", e.global.x, e.global.y)
-            const newX = e.global.x;
-            const newY = e.global.y
-            // Calculate distance
-            const distance = Math.hypot(newX - playerContainer.x, newY - playerContainer.y);
-            if(isPointInPolygon({x: newX, y: newY},airtok)){
-              setAirTokBot(true);
-              return false;
-            }
-            // Compute duration dynamically (seconds)
-            const duration = distance / 100;
-            if(isPointInPolygon({ x: newX, y: newY }, backtoLanding)){
-              setTimeout(() => {
-                playerContainer.visible = false;
-                mainbg.visible = false;
-                bankbg.visible = false;
-                setActiveRoom("landing")
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoom, quickChat: quickChat });
 
-              }, duration*1000);
-            }
-
-            if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
-              setTimeout(() => {
-                playerContainer.visible = false;
-                mainbg.visible = false;
-                bankbg.visible = true;
-                setActiveRoom("bank")
-
-              }, duration*1000);
-            }
-
-
-            if (isPointInPolygon({ x: newX, y: newY }, restrictedArea)) {
-              // playerContainer.visible = false;
-              if(animating){
-                gsapanimation.pause(); // Stop animation without destroying it
-                let target = gsapanimation.targets()[0]; // Get the animated element
-                playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
-                playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
-              console.log("gsap",playerContainer.x,playerContainer.y)
-              playerContainer.removeChildAt(2)
-
-            //   WalkingSprites.forEach(sprite => {
-            //     sprite.visible = false;
-            //     sprite.x = playerContainer.x ;
-            //     sprite.y = playerContainer.y ;
-            //     sprite.stop();
-            // });
-              }
-              animating = true;
-              // console.log("currentAvatarAngle",currentAvatarAngle,WalkingSprites[currentAvatarAngle],WalkingSprites)
-              // const WalkingSprites = [WalkingSprites_0, WalkingSprites_1, WalkingSprites_2];
-              let _currentAvatarAngle = currentAvatarAngle <  8 ? currentAvatarAngle : 0
-              // if (WalkingSprites[_currentAvatarAngle]) {
-              //   let sprite = WalkingSprites[_currentAvatarAngle];
-              //   sprite.visible = true;
-              //   sprite.play();
-
-              playerContainer.children[0].visible = false;
-              WalkingSprites[_currentAvatarAngle].name = 'walking'
-              playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
-              if(playerContainer.getChildByName('walking')){
-                playerContainer.getChildByName('walking').play();
-                playerContainer.getChildByName('walking').visible = true;  
-              }
-              
-                socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom, quickChat: quickChat});
-            
-                gsapanimation =  gsap.to(playerContainer, {
-                    duration: duration,
-                    x: newX - 25,
-                    y: newY - 50,
-                    ease: "none",
-                    onComplete: () => {
+                gsapanimation = gsap.to(playerContainer, {
+                  duration: duration,
+                  x: newX - 25,
+                  y: newY - 50,
+                  ease: "none",
+                  onComplete: () => {
                     //   WalkingSprites.forEach(sprite => {
                     //     sprite.visible = false;
                     //     if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
@@ -538,65 +508,65 @@ bubble.anchor = new Point(0.2, 0.7);
                     //       sprite.x = newX - 25;
                     //       sprite.y = newY - 50;
                     //     }
-                       
+
                     //     sprite.stop();
                     // });
                     playerContainer.children[0].visible = true;
                     playerContainer.removeChildAt(2)
 
-                    if(isPointInPolygon({x: newX, y: newY}, backtoLanding)){
+                    if (isPointInPolygon({ x: newX, y: newY }, backtoLanding)) {
                       playerContainer.x = 1299 - 55
                       playerContainer.y = 291 - 50
                       // WalkingSprites[_currentAvatarAngle].x = 1245;
                       // WalkingSprites[_currentAvatarAngle].y = 241;
                     }
-                    else{
+                    else {
                       playerContainer.x = newX - 25;
                       playerContainer.y = newY - 50;
                     }
-                    if(isPointInPolygon({ x: newX, y: newY }, bankGate)){
+                    if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
                       playerContainer.visible = false;
                     }
-                    else{
+                    else {
                       playerContainer.visible = true;
-      
+
                     }
                     animating = false;
-                
-                    }
+
+                  }
                 });
 
-            // }
-          //   setTimeout(() => {
-              
-          // }, duration * 1000);
+                // }
+                //   setTimeout(() => {
 
-           
-             
+                // }, duration * 1000);
 
+
+
+
+              }
             }
-          }
 
 
-          if(activeRoomRef.current == "bank"){
-            console.log("plot bank", e.global.x, e.global.y)
-            const newX = e.global.x;
-            const newY = e.global.y
-            // Calculate distance
-            const distance = Math.hypot(newX - animation.x, newY - animation.y);
+            if (activeRoomRef.current == "bank") {
+              console.log("plot bank", e.global.x, e.global.y)
+              const newX = e.global.x;
+              const newY = e.global.y
+              // Calculate distance
+              const distance = Math.hypot(newX - animation.x, newY - animation.y);
 
-            // Compute duration dynamically (seconds)
-            const duration = distance / 100;
-            if(isPointInPolygon({ x: newX, y: newY }, bankBack)){
-              setTimeout(() => {
-                playerContainer.visible = true;
-                mainbg.visible = true;
-                bankbg.visible = false;
-                setActiveRoom("base")
+              // Compute duration dynamically (seconds)
+              const duration = distance / 100;
+              if (isPointInPolygon({ x: newX, y: newY }, bankBack)) {
+                setTimeout(() => {
+                  playerContainer.visible = true;
+                  mainbg.visible = true;
+                  bankbg.visible = false;
+                  setActiveRoom("base")
 
-              }, duration*1000);
+                }, duration * 1000);
+              }
             }
-          }
             // avatar.position.copyFrom(e.global);
           });
           setTimeout(() => {
@@ -609,10 +579,10 @@ bubble.anchor = new Point(0.2, 0.7);
             // app.stage.addChild(avatar); // Add background first (so it's behind everything)
 
             const adBanner = document.getElementById("adBanner");
-            if(adBanner){
+            if (adBanner) {
               adBanner.style.visibility = "visible";
             }
-            
+
             // const chabubble = document.getElementById("chatIconLeft");
             // if(chabubble){
             //   chabubble.style.visibility = "visible";
@@ -627,14 +597,14 @@ bubble.anchor = new Point(0.2, 0.7);
           }, 2500)
 
           socket.on("playersUpdate", async (data) => {
-           if(!app){
-            return;
-           }
+            if (!app) {
+              return;
+            }
             for (const id in data) {
               if (id === user._id) continue;
               const pos = data[id];
               if (pos.activeRoom !== activeRoom) {
-                app.stage.removeChild(players.current[id]); 
+                app.stage.removeChild(players.current[id]);
                 delete players.current[id];
               };
 
@@ -652,9 +622,9 @@ bubble.anchor = new Point(0.2, 0.7);
               if (!players.current[id]) {
 
                 const p = new Container()
-                
+
                 const s = new Sprite(sheet.textures[_rotationFrames[6]]);
-      
+
                 s.scale = 0.08
 
                 p.x = 650;
@@ -664,8 +634,8 @@ bubble.anchor = new Point(0.2, 0.7);
                 p.addChild(s)
 
                 const quickChatContainer = new Container();
-          
-          
+
+
                 const nameText = new Text(pos.quickChat, {
                   fontSize: 16,
                   wordWrap: true,
@@ -678,7 +648,7 @@ bubble.anchor = new Point(0.2, 0.7);
                 nameText.name = 'quickchattext'
                 // const bounds = nameText.getLocalBounds();
                 // nameText
-                bubble.width =  2200
+                bubble.width = 2200
                 bubble.height = pos.quickChat ? pos.quickChat.length > 20 ? 1000 : 500 : 500
                 quickChatContainer.name = 'quickchat'
                 quickChatContainer.addChild(bubble)
@@ -692,43 +662,53 @@ bubble.anchor = new Point(0.2, 0.7);
 
               // if (!playersWalking.current[id]) {
 
-          //     const WalkingSprites = []; // Store all sprites here
+              //     const WalkingSprites = []; // Store all sprites here
 
-          // for (let angle = 0; angle <= 315; angle += 45) {
+              // for (let angle = 0; angle <= 315; angle += 45) {
 
-          //     const sheet = await Assets.load(`/assets/${angle}Walk.json`);
-          //     const frames = [];
-           
-          //     for (let i = 1; i <= 30; i++) {
-          //       frames.push(sheet.textures[`Walk${i}.png`]);
-          //   }
-          //     console.log("WalkingSprites", angle,frames)
-          
-          //     // Create an AnimatedSprite
-          //     const sprite = new AnimatedSprite(frames);
-              
-          //     // Set animation properties
-          //     sprite.animationSpeed = 1;
-          //     sprite.loop = true;
-          //     sprite.scale = 0.08;
-          //     sprite.x = animation.x;
-          //     sprite.y = animation.y;
-          //     sprite.visible = false;
+              //     const sheet = await Assets.load(`/assets/${angle}Walk.json`);
+              //     const frames = [];
 
-          //     app.stage.addChild(sprite);
-              
-          //     // Store it in an object with its angle as the key
-          //     WalkingSprites.push(sprite);
+              //     for (let i = 1; i <= 30; i++) {
+              //       frames.push(sheet.textures[`Walk${i}.png`]);
+              //   }
+              //     console.log("WalkingSprites", angle,frames)
 
-          // }
+              //     // Create an AnimatedSprite
+              //     const sprite = new AnimatedSprite(frames);
+
+              //     // Set animation properties
+              //     sprite.animationSpeed = 1;
+              //     sprite.loop = true;
+              //     sprite.scale = 0.08;
+              //     sprite.x = animation.x;
+              //     sprite.y = animation.y;
+              //     sprite.visible = false;
+
+              //     app.stage.addChild(sprite);
+
+              //     // Store it in an object with its angle as the key
+              //     WalkingSprites.push(sprite);
+
+              // }
               //   playersWalking.current[id] = WalkingSprites
               // }
 
-              if(pos.quickChat){
-                if(pos.quickChat != ""){
-                  players.current[id].getChildByName('player').getChildByName('quickchat').visible = true;
-                  players.current[id].getChildByName('player').getChildByName('quickchat').getChildByName('quickchattext').text = pos.quickChat
+              if (pos.quickChat) {
+                console.log("quickchat", pos.quickChat)
+                if (pos.quickChat != "") {
+                  players.current[id].getChildByName('quickchat').visible = true;
+                  players.current[id].getChildByName('quickchat').getChildByName('quickchattext').text = pos.quickChat
                 }
+                else {
+                  players.current[id].getChildByName('quickchat').visible = false;
+                  players.current[id].getChildByName('quickchat').getChildByName('quickchattext').text = ""
+                }
+              }
+              else {
+                console.log("not quickchat")
+                players.current[id].getChildByName('quickchat').visible = false;
+                players.current[id].getChildByName('quickchat').getChildByName('quickchattext').text = ""
               }
 
               const distance = Math.hypot(pos.x - players.current[id].x, pos.y - players.current[id].y);
@@ -737,44 +717,44 @@ bubble.anchor = new Point(0.2, 0.7);
               const duration = distance / 100;
 
               players.current[id].getChildByName('player').texture = sheet.textures[_rotationFrames[parseInt(pos.angle)]];
-              if(players.current[id].x != pos.x){
-                if(players.current[id].getChildByName('player')){
+              if (players.current[id].x != pos.x) {
+                if (players.current[id].getChildByName('player')) {
                   players.current[id].getChildByName('player').visible = false;
                 }
-                if(players.current[id].getChildByName('walking')){
+                if (players.current[id].getChildByName('walking')) {
                   players.current[id].getChildByName('walking');
                 }
                 WalkingSprites[pos.angle].name = 'walking'
-                players.current[id].addChild(WalkingSprites[pos.angle]) 
+                players.current[id].addChild(WalkingSprites[pos.angle])
                 players.current[id].getChildByName('walking').play();
                 players.current[id].getChildByName('walking').visible = true;
-              // players.current[id]
+                // players.current[id]
 
-              
-              gsap.to(players.current[id], {
-                duration: duration,
-                x: pos.x,
-                y: pos.y, 
-                ease: "none",
-                
-                onComplete: () => {
-                //   playersWalking.current[id].forEach(sprite => {
-                //     sprite.visible = false;                
-                //     sprite.x = pos.x;
-                //     sprite.y = pos.y ;               
-                //     sprite.stop();
-                // });
-              players.current[id].getChildByName('player').visible = true;
-              players.current[id].removeChild(players.current[id].getChildByName('walking'));
-              players.current[id].x = pos.x;
-              players.current[id].y = pos.y;
 
-                }
-              });
+                gsap.to(players.current[id], {
+                  duration: duration,
+                  x: pos.x,
+                  y: pos.y,
+                  ease: "none",
+
+                  onComplete: () => {
+                    //   playersWalking.current[id].forEach(sprite => {
+                    //     sprite.visible = false;                
+                    //     sprite.x = pos.x;
+                    //     sprite.y = pos.y ;               
+                    //     sprite.stop();
+                    // });
+                    players.current[id].getChildByName('player').visible = true;
+                    players.current[id].removeChild(players.current[id].getChildByName('walking'));
+                    players.current[id].x = pos.x;
+                    players.current[id].y = pos.y;
+
+                  }
+                });
+              }
+
             }
 
-            }
-      
             for (const id in players.current) {
               if (!data[id]) {
                 app.stage.removeChild(players.current[id]);
@@ -792,7 +772,7 @@ bubble.anchor = new Point(0.2, 0.7);
       }
     };
 
- 
+
 
     initApp();
 
@@ -800,7 +780,7 @@ bubble.anchor = new Point(0.2, 0.7);
     return () => {
       isMounted = false;
       if (appRef.current) {
-        if(socket){
+        if (socket) {
           socket.disconnect();
         }
         appRef.current.destroy(true, {
@@ -814,63 +794,100 @@ bubble.anchor = new Point(0.2, 0.7);
   }, [user]);
 
   useEffect(() => {
-    if(activeRoom == "bank"){
-      console.log("room elements",appRef.current.stage)
-      const airtok = appRef.current.stage.children[5] ; 
-      
+    if (activeRoom == "bank") {
+      console.log("room elements", appRef.current.stage)
+      const airtok = appRef.current.stage.children[5];
+
       airtok.visible = false;
     }
-    if(activeRoom == "base"){
-      const bankBg = appRef.current.stage.children[2] ;       
+    if (activeRoom == "base") {
+      const bankBg = appRef.current.stage.children[2];
       bankBg.visible = false;
 
 
-      const baseBg = appRef.current.stage.children[1] ;       
+      const baseBg = appRef.current.stage.children[1];
       baseBg.visible = true;
 
-      const player = appRef.current.stage.children[4] ; 
+      const player = appRef.current.stage.children[4];
       player.visible = true;
 
-      const airtok = appRef.current.stage.children[5] ; 
-      
+      const airtok = appRef.current.stage.children[5];
+
       airtok.visible = true;
     }
-  },[activeRoom])
-  useEffect(() => {
-    if(appRef.current){
-        const player = appRef.current.stage.getChildByName('player') ; 
-        console.log(player)
-        if(quickChat){
-          player.getChildByName('quickchat').visible = true;
-          player.getChildByName('quickchat').getChildByName('quickchattext').text = quickChat;
-          socketRef.current.emit("move", { x: player.x, y: player.y,angle: rotationIndex.current , activeRoom: activeRoom, quickChat: quickChat });
-          
-        }
-        else{
-          player.getChildByName('quickchat').visible = false;
-          player.getChildByName('quickchat').getChildByName('quickchattext').text = "";
-        }
-        
-        
-    }else{
+  }, [activeRoom])
+  async function updateQuickChat() {
+
+    const player = appRef.current.stage.getChildByName('player');
+    console.log(player)
+    if (quickChat != "") {
+
+      const quickChatContainer = new Container();
+      // Load the texture (already in your loader or from file)
+      const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
+
+      // Create a resizable background using 9-slice scaling
+      const bubble = new NineSlicePlane(bubbleTexture, 15, 15, 15, 15);
+      // These 4 values are your left, top, right, bottom edge slices
+      bubble.name = "bubble";
+      bubble.scale = 0.08
+      bubble.anchor = new Point(0.2, 0.7);
+
+      bubble.width = 2200
+      bubble.height = quickChat ? quickChat.length > 20 ? 1000 : 500 : 500
+
+
+      const nameText = new Text(quickChat, {
+        fontSize: 16,
+        wordWrap: true,
+        align: "center",
+        wordWrapWidth: 10,
+        fill: 0x000000
+      });
+      nameText.anchor.set(0.1, 1);
+      // nameText.y = -5;
+      nameText.name = "quickchattext"
+      // const bounds = nameText.getLocalBounds();
+      // nameText
+      quickChatContainer.visible = true;
+      quickChatContainer.name = 'quickchat';
+      quickChatContainer.addChild(bubble)
+      quickChatContainer.addChild(nameText)
+
+
+      player.addChild(quickChatContainer)
+
+
 
     }
-  },[quickChat,appRef])
+    else {
+      player.removeChild(player.getChildByName('quickchat'))
+
+    }
+    socketRef.current.emit("move", { x: player.x, y: player.y, angle: rotationIndex.current, activeRoom: activeRoom, quickChat: quickChat });
+
+  }
+  useEffect(() => {
+    if (appRef.current) {
+      updateQuickChat()
+
+    }  
+  }, [quickChat, appRef])
 
   useEffect(() => {
-    console.log("players",players)
+    console.log("players", players)
 
-  },[players])
+  }, [players])
 
 
 
 
 
   return (<>
- 
-  <div ref={canvasRef} />
+
+    <div ref={canvasRef} />
   </>)
-  
+
 };
 
 export default GameComponent;
