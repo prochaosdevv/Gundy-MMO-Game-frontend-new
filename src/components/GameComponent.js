@@ -740,6 +740,15 @@ const GameComponent = () => {
               const duration = distance / 100;
 
               players.current[id].getChildByName('player').texture = sheet.textures[_rotationFrames[parseInt(pos.angle)]];
+                
+              if (pos.activeRoom !== activeRoomRef.current && (pos.act == "resposition"  || (pos.x == players.current[id].x && pos.y == players.current[id].y))) {
+                app.stage.removeChild(players.current[id]);
+                delete players.current[id];
+                return;
+              };
+             
+
+
               if (players.current[id].x != pos.x) {
                 if (players.current[id].getChildByName('player')) {
                   players.current[id].getChildByName('player').visible = false;
@@ -753,13 +762,7 @@ const GameComponent = () => {
                 players.current[id].getChildByName('walking').visible = true;
                 // players.current[id]
 
-                  
-                if (pos.activeRoom !== activeRoomRef.current && (pos.act == "resposition"  || (pos.x == players.current[id].x && pos.y == players.current[id].y))) {
-                  app.stage.removeChild(players.current[id]);
-                  delete players.current[id];
-                  return;
-                };
-               
+                
                 gsap.to(players.current[id], {
                   duration: duration,
                   x: pos.x,
@@ -850,7 +853,7 @@ const GameComponent = () => {
     }
     activeRoomRef.current = activeRoom
   }, [activeRoom])
-  async function updateQuickChat() {
+  async function updateQuickChat(quickChat) {
 
     const player = appRef.current.stage.getChildByName('player');
     console.log(player)
@@ -902,7 +905,7 @@ const GameComponent = () => {
   }
   useEffect(() => {
     if (appRef.current) {
-      updateQuickChat()
+      updateQuickChat(quickChat)
       const player = appRef.current.stage.getChildByName('player');
       socketRef.current.emit("move", { x: player.x, y: player.y, angle: rotationIndex.current, activeRoom: activeRoom, quickChat: quickChat });
 
