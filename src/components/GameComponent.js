@@ -127,7 +127,7 @@ bubble.anchor = new Point(0.2, 0.7);
           });
           nameText.anchor.set(0.1, 1);
           // nameText.y = -5;
-          nameText.l
+          nameText.name = "quickchattext"
           // const bounds = nameText.getLocalBounds();
           // nameText
           bubble.width =  2200
@@ -135,6 +135,7 @@ bubble.anchor = new Point(0.2, 0.7);
           quickChatContainer.addChild(bubble)
           quickChatContainer.addChild(nameText)
           quickChatContainer.visible = false;
+          quickChatContainer.name = 'quickchat';
           const playerContainer = new Container();
           const sheet = await Assets.load('/assets/texture.json');
 
@@ -142,6 +143,7 @@ bubble.anchor = new Point(0.2, 0.7);
           const animation = new Sprite(sheet.textures["0.png"]);
           console.log(animation)
           animation.scale = 0.08
+          
 
           // playerContainer.sprite = animation
  
@@ -153,6 +155,7 @@ bubble.anchor = new Point(0.2, 0.7);
           playerContainer.y = 400;
           playerContainer.zIndex = 99;
           playerContainer.visible = false;
+          playerContainer.name = 'player';
           app.stage.addChild(playerContainer);
           // const nameText = new Text("Player123", {
           //   fontSize: 14,
@@ -230,6 +233,7 @@ bubble.anchor = new Point(0.2, 0.7);
               sprite.animationSpeed = 1;
               sprite.loop = true;
               sprite.scale = 0.08;
+              
               // sprite.x = playerContainer.x;
               // sprite.y = playerContainer.y;
               sprite.visible = false;
@@ -361,8 +365,11 @@ bubble.anchor = new Point(0.2, 0.7);
                     let target = gsapanimation.targets()[0]; // Get the animated element
                     playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
                     playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
-                  console.log("gsap",playerContainer.x,playerContainer.y)
-                  playerContainer.removeChildAt(2)
+                  console.log("gsap",playerContainer.x,playerContainer.y);
+                   if(playerContainer.getChildByName('walking')){
+                    playerContainer.removeChild(playerContainer.getChildByName('walking'))
+                   }
+                 
 
                   // const WalkingSprites = 
                   // WalkingSprites.forEach(sprite => {
@@ -383,9 +390,13 @@ bubble.anchor = new Point(0.2, 0.7);
                   //   sprite.play();
 
                   playerContainer.children[0].visible = false;
+                  WalkingSprites[_currentAvatarAngle].name = 'walking'
                   playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
-                  playerContainer.children[2].play();
-                  playerContainer.children[2].visible = true;
+                  if(playerContainer.getChildByName("walking")){
+                    playerContainer.getChildByName("walking").play();
+                    playerContainer.getChildByName("walking").visible = true;
+  
+                  }
                   
                   socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom,  quickChat: quickChat});
                 
@@ -397,7 +408,7 @@ bubble.anchor = new Point(0.2, 0.7);
                         
                         onComplete: () => {
                           playerContainer.children[0].visible = true;
-                          playerContainer.removeChildAt(2)
+                          playerContainer.removeChild(playerContainer.getChildByName("walking"))
                         //   WalkingSprites.forEach(sprite => {
                         //     sprite.visible = false;
                             
@@ -500,10 +511,13 @@ bubble.anchor = new Point(0.2, 0.7);
               //   sprite.play();
 
               playerContainer.children[0].visible = false;
+              WalkingSprites[_currentAvatarAngle].name = 'walking'
               playerContainer.addChild(WalkingSprites[_currentAvatarAngle]);
-              playerContainer.children[2].play();
-              playerContainer.children[2].visible = true;
-
+              if(playerContainer.getChildByName('walking')){
+                playerContainer.getChildByName('walking').play();
+                playerContainer.getChildByName('walking').visible = true;  
+              }
+              
                 socket.emit("move", { x: newX - 25, y: newY - 50,angle: _currentAvatarAngle , activeRoom: activeRoom, quickChat: quickChat});
             
                 gsapanimation =  gsap.to(playerContainer, {
@@ -643,6 +657,7 @@ bubble.anchor = new Point(0.2, 0.7);
 
                 p.x = 650;
                 p.y = 400;
+                s.name = 'player'
                 p.zIndex = 99;
                 p.addChild(s)
 
@@ -658,11 +673,12 @@ bubble.anchor = new Point(0.2, 0.7);
                 });
                 nameText.anchor.set(0.1, 1);
                 // nameText.y = -5;
-                nameText.l
+                nameText.name = 'quickchattext'
                 // const bounds = nameText.getLocalBounds();
                 // nameText
                 bubble.width =  2200
                 bubble.height = pos.quickChat ? pos.quickChat.length > 20 ? 1000 : 500 : 500
+                quickChatContainer.name = 'quickchat'
                 quickChatContainer.addChild(bubble)
                 quickChatContainer.addChild(nameText)
                 quickChatContainer.visible = pos.quickChat && pos.quickChat != "" ? true : false;
@@ -710,16 +726,18 @@ bubble.anchor = new Point(0.2, 0.7);
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
 
-              players.current[id].children[0].texture = sheet.textures[_rotationFrames[parseInt(pos.angle)]];
+              players.current[id].getChildByName('player').texture = sheet.textures[_rotationFrames[parseInt(pos.angle)]];
               if(players.current[id].x != pos.x){
-                players.current[id].children[0].visible = false;
-                if(players.current[id].children[2]){
-                  players.current[id].removeChildAt(2);
+                if(players.current[id].getChildByName('player')){
+                  players.current[id].getChildByName('player').visible = false;
                 }
-                
+                if(players.current[id].getChildByName('walking')){
+                  players.current[id].getChildByName('walking');
+                }
+                WalkingSprites[pos.angle].name = 'walking'
                 players.current[id].addChild(WalkingSprites[pos.angle]) 
-                players.current[id].children[2].play();
-                players.current[id].children[2].visible = true;
+                players.current[id].getChildByName('walking').play();
+                players.current[id].getChildByName('walking').visible = true;
               // players.current[id]
 
               
@@ -736,8 +754,8 @@ bubble.anchor = new Point(0.2, 0.7);
                 //     sprite.y = pos.y ;               
                 //     sprite.stop();
                 // });
-              players.current[id].children[0].visible = true;
-              players.current[id].removeChildAt(2);
+              players.current[id].getChildByName('player').visible = true;
+              players.current[id].removeChild(players.current[id].getChildByName('walking'));
               players.current[id].x = pos.x;
               players.current[id].y = pos.y;
 
@@ -810,15 +828,15 @@ bubble.anchor = new Point(0.2, 0.7);
   },[activeRoom])
   useEffect(() => {
     if(appRef.current){
-        const player = appRef.current.stage.children[4] ; 
+        const player = appRef.current.stage.getChildByName('player') ; 
         console.log(player)
         if(quickChat){
-          player.children[1].visible = true;
-          player.children[1].children[1].text = quickChat;
+          player.getChildByName('quickchat').visible = true;
+          player.getChildByName('quickchat').getChildByName('quickchattext').text = quickChat;
         }
         else{
-          player.children[1].visible = false;
-          player.children[1].children[1].text = "";
+          player.getChildByName('quickchat').visible = false;
+          player.getChildByName('quickchat').getChildByName('quickchattext').text = "";
         }
         
         
