@@ -754,7 +754,7 @@ const GameComponent = () => {
                 // players.current[id]
 
                   
-                if (pos.activeRoom !== activeRoomRef.current && pos.act == "resposition") {
+                if (pos.activeRoom !== activeRoomRef.current && (pos.act == "resposition"  || (pos.x == players.current[id].x && pos.y == players.current[id].y))) {
                   app.stage.removeChild(players.current[id]);
                   delete players.current[id];
                   return;
