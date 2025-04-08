@@ -410,6 +410,7 @@ const GameComponent = () => {
                       playerContainer.x = 162;
                       playerContainer.y = 428;
                         socket.emit("move", { x: 162, y: 428, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat });
+                        setActiveRoom("base")
 
                       // WalkingSprites[_currentAvatarAngle].x = 162;
                       // WalkingSprites[_currentAvatarAngle].y = 428;
@@ -531,6 +532,7 @@ const GameComponent = () => {
                       playerContainer.x = 1299 - 55
                       playerContainer.y = 291 - 50
                       socket.emit("move", { x: 1299 - 55, y: 291 - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat });
+                      setActiveRoom('landing')
 
                       // WalkingSprites[_currentAvatarAngle].x = 1245;
                       // WalkingSprites[_currentAvatarAngle].y = 241;
@@ -542,6 +544,7 @@ const GameComponent = () => {
                     if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
                       playerContainer.visible = false;
                       socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'bank', quickChat: quickChat });
+                      setActiveRoom('bank')
 
                     }
                     else {
