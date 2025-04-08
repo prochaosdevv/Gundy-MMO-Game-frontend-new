@@ -379,7 +379,7 @@ const GameComponent = () => {
 
                 }
 
-                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoom, quickChat: quickChat });
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoomRef.current, quickChat: quickChat });
 
                 gsapanimation = gsap.to(playerContainer, {
                   duration: duration,
@@ -506,7 +506,7 @@ const GameComponent = () => {
                   playerContainer.getChildByName('walking').visible = true;
                 }
 
-                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoom, quickChat: quickChat });
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoomRef.current, quickChat: quickChat });
 
                 gsapanimation = gsap.to(playerContainer, {
                   duration: duration,
@@ -626,11 +626,7 @@ const GameComponent = () => {
             for (const id in data) {
               if (id === user._id) continue;
               const pos = data[id];
-              if (pos.activeRoom !== activeRoomRef.current) {
-                app.stage.removeChild(players.current[id]);
-                delete players.current[id];
-                return;
-              };
+             
               console.log('activeRoom',activeRoomRef.current)
 
               const _rotationFrames = [
@@ -773,7 +769,11 @@ const GameComponent = () => {
                     players.current[id].removeChild(players.current[id].getChildByName('walking'));
                     players.current[id].x = pos.x;
                     players.current[id].y = pos.y;
-
+                    if (pos.activeRoom !== activeRoomRef.current) {
+                      app.stage.removeChild(players.current[id]);
+                      delete players.current[id];
+                      return;
+                    };
                   }
                 });
               }
