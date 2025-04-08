@@ -379,7 +379,7 @@ const GameComponent = () => {
 
                 }
 
-                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: isPointInPolygon({ x: newX, y: newY }, baseCity) ? "base" : activeRoomRef.current, quickChat: quickChat });
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoom, quickChat: quickChat });
 
                 gsapanimation = gsap.to(playerContainer, {
                   duration: duration,
@@ -505,7 +505,7 @@ const GameComponent = () => {
                   playerContainer.getChildByName('walking').visible = true;
                 }
 
-                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: isPointInPolygon({ x: newX, y: newY }, backtoLanding) ? "landing" : isPointInPolygon({ x: newX, y: newY }, bankGate) ? "bank" : activeRoomRef.current, quickChat: quickChat });
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoom, quickChat: quickChat });
 
                 gsapanimation = gsap.to(playerContainer, {
                   duration: duration,
