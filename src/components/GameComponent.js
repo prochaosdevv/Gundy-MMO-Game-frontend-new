@@ -84,7 +84,15 @@ const GameComponent = () => {
 
           app.stage.addChild(airtokAvatar);
 
+          const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
 
+          // Create a resizable background using 9-slice scaling
+          const bubble = new NineSlicePlane(bubbleTexture, 15, 15, 15, 15);
+          // These 4 values are your left, top, right, bottom edge slices
+          bubble.name = "bubble";
+          bubble.scale = 0.08
+          bubble.anchor = new Point(0.2, 0.7);
+    
 
 
           const bgTexture = await Assets.load('/assets/landing.png');
