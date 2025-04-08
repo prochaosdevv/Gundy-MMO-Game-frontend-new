@@ -639,7 +639,7 @@ const GameComponent = () => {
                 "315.png",
                 "0.png"
               ]
-              if (!players.current[id]) {
+              if (!players.current[id] && pos.activeRoom == activeRoom) {
 
                 const p = new Container()
 
