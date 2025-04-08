@@ -83,7 +83,7 @@ const MenuBar = () => {
     const handleQuickchat = () => {
       setQuickChat(quickText) ; setQuickText("");
       setTimeout(() => {
-        setQuickChat(false)
+        setQuickChat("")
       }, 5000);
     }
 
