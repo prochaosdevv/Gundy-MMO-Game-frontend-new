@@ -15,7 +15,7 @@ const GameComponent = () => {
   const playersWalking = useRef({})
   const userPos = useRef({})
   const {activeRoom,setActiveRoom,quickChat,setQuickChat,setAirTokBot,activeRoomRef,setShowChatIcon,user} = useContext(ContractContext);
- 
+ const rotationIndex = useRef(0)
   useEffect(() => {
     let isMounted = true; // Track mounting state
     let currentAvatarAngle = 0;
@@ -26,6 +26,7 @@ const GameComponent = () => {
     const socket = io("https://api.gundys.world", {
       auth: { access_token }
     });
+    socketRef.current = socket;
     const initApp = async () => {
       try {
       
@@ -191,6 +192,7 @@ bubble.anchor = new Point(0.2, 0.7);
             if (angle < 0) angle += 360;
             // Determine which frame to use based on the closest angle
             const frameIndex = Math.round(angle / 45);
+            rotationIndex.current = frameIndex
             // console.log(angle, frameIndex)
 
             const rotationFrames = [
@@ -682,8 +684,9 @@ bubble.anchor = new Point(0.2, 0.7);
                 quickChatContainer.addChild(bubble)
                 quickChatContainer.addChild(nameText)
                 quickChatContainer.visible = pos.quickChat && pos.quickChat != "" ? true : false;
+                p.addChild(quickChatContainer)
                 app.stage.addChild(p);
-                app.stage.addChild(quickChatContainer);
+                // app.stage.addChild(quickChatContainer);
                 players.current[id] = p;
               }
 
@@ -720,6 +723,13 @@ bubble.anchor = new Point(0.2, 0.7);
           // }
               //   playersWalking.current[id] = WalkingSprites
               // }
+
+              if(pos.quickChat){
+                if(pos.quickChat != ""){
+                  players.current[id].getChildByName('player').getChildByName('quickchat').visible = true;
+                  players.current[id].getChildByName('player').getChildByName('quickchat').getChildByName('quickchattext').text = pos.quickChat
+                }
+              }
 
               const distance = Math.hypot(pos.x - players.current[id].x, pos.y - players.current[id].y);
 
@@ -833,6 +843,8 @@ bubble.anchor = new Point(0.2, 0.7);
         if(quickChat){
           player.getChildByName('quickchat').visible = true;
           player.getChildByName('quickchat').getChildByName('quickchattext').text = quickChat;
+          socketRef.current.emit("move", { x: player.x, y: player.y,angle: rotationIndex.current , activeRoom: activeRoom, quickChat: quickChat });
+          
         }
         else{
           player.getChildByName('quickchat').visible = false;
