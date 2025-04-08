@@ -615,6 +615,8 @@ const GameComponent = () => {
             if (menubar) {
               menubar.style.visibility = "visible";
             }
+            socket.emit("move", { x: 650, y: 400, angle: 6, activeRoom: activeRoomRef.current, quickChat: quickChat , act: "move"});
+
             appRef.current = app;
 
           }, 2500)
@@ -648,8 +650,8 @@ const GameComponent = () => {
 
                 s.scale = 0.08
 
-                p.x = 650;
-                p.y = 400;
+                p.x = pos.x ;
+                p.y = pos.y;
                 s.name = 'player'
                 p.zIndex = 99;
                 p.addChild(s)
