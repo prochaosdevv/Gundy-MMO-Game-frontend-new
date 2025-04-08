@@ -409,6 +409,8 @@ const GameComponent = () => {
                     if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                       playerContainer.x = 162;
                       playerContainer.y = 428;
+                        socket.emit("move", { x: 162, y: 428, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat });
+
                       // WalkingSprites[_currentAvatarAngle].x = 162;
                       // WalkingSprites[_currentAvatarAngle].y = 428;
                     }
@@ -472,7 +474,10 @@ const GameComponent = () => {
                   playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
                   playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
                   console.log("gsap", playerContainer.x, playerContainer.y)
-                  playerContainer.removeChildAt(2)
+                 
+                  if (playerContainer.getChildByName('walking')) {
+                    playerContainer.removeChild(playerContainer.getChildByName('walking'))
+                  }
 
                   //   WalkingSprites.forEach(sprite => {
                   //     sprite.visible = false;
@@ -520,11 +525,13 @@ const GameComponent = () => {
                     //     sprite.stop();
                     // });
                     playerContainer.children[0].visible = true;
-                    playerContainer.removeChildAt(2)
+                    playerContainer.removeChild(playerContainer.getChildByName("walking"))
 
                     if (isPointInPolygon({ x: newX, y: newY }, backtoLanding)) {
                       playerContainer.x = 1299 - 55
                       playerContainer.y = 291 - 50
+                      socket.emit("move", { x: 1299 - 55, y: 291 - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat });
+
                       // WalkingSprites[_currentAvatarAngle].x = 1245;
                       // WalkingSprites[_currentAvatarAngle].y = 241;
                     }
@@ -534,6 +541,8 @@ const GameComponent = () => {
                     }
                     if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
                       playerContainer.visible = false;
+                      socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'bank', quickChat: quickChat });
+
                     }
                     else {
                       playerContainer.visible = true;
