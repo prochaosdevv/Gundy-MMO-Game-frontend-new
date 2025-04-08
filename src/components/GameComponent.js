@@ -407,6 +407,7 @@ const GameComponent = () => {
                     // });
                     playerContainer.x = newX - 25;
                     playerContainer.y = newY - 50;
+                    socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat });
                     if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                       playerContainer.x = 162;
                       playerContainer.y = 428;
@@ -541,6 +542,7 @@ const GameComponent = () => {
                     else {
                       playerContainer.x = newX - 25;
                       playerContainer.y = newY - 50;
+                      socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat });
                     }
                     if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
                       playerContainer.visible = false;
