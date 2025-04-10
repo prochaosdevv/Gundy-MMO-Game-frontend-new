@@ -380,8 +380,12 @@ const GameComponent = () => {
                   playerContainer.getChildByName("walking").visible = true;
 
                 }
+                let nextRoom = activeRoomRef.current;
+                if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
+                  nextRoom  = 'base'
+                }
 
-                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoomRef.current, quickChat: quickChat , act: "move"});
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoomRef.current, quickChat: quickChat , act: "move" , nextRoom: nextRoom});
 
                 gsapanimation = gsap.to(playerContainer, {
                   duration: duration,
@@ -409,14 +413,14 @@ const GameComponent = () => {
                     // });
                     playerContainer.x = newX - 25;
                     playerContainer.y = newY - 50;
-                    socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat , act: "move"});
+                    socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat , act: "move" , nextRoom: 'landing'});
                     if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                       playerContainer.x = 162;
                       playerContainer.y = 428;
                       playerContainer.visible = true;
                       mainbg.visible = true;
                       bg.visible = false
-                        socket.emit("move", { x: 162, y: 428, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "resposition"});
+                        socket.emit("move", { x: 162, y: 428, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "resposition" , nextRoom: 'base'});
                         setActiveRoom("base")
                        
                       // WalkingSprites[_currentAvatarAngle].x = 162;
@@ -495,8 +499,14 @@ const GameComponent = () => {
                   playerContainer.getChildByName('walking').play();
                   playerContainer.getChildByName('walking').visible = true;
                 }
-
-                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoomRef.current, quickChat: quickChat , act: "move"});
+                let nextRoom = activeRoomRef.current;
+                if (isPointInPolygon({ x: newX, y: newY }, backtoLanding)) {
+                  nextRoom  = 'landing'
+                }
+                if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
+                  nextRoom  = 'bank'
+                }
+                socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: activeRoomRef.current, quickChat: quickChat , act: "move",nextRoom:nextRoom});
 
                 gsapanimation = gsap.to(playerContainer, {
                   duration: duration,
@@ -519,13 +529,13 @@ const GameComponent = () => {
                     // });
                     playerContainer.children[0].visible = true;
                     playerContainer.removeChild(playerContainer.getChildByName("walking"))
-                    socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "move"});
+                    socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "move" , nextRoom: 'base'});
                     if (isPointInPolygon({ x: newX, y: newY }, backtoLanding)) {
                       playerContainer.x = 1299 - 55
                       playerContainer.y = 291 - 50
                       mainbg.visible = false;
                       bg.visible = true;
-                      socket.emit("move", { x: 1299 - 55, y: 291 - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat , act: "resposition"});
+                      socket.emit("move", { x: 1299 - 55, y: 291 - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat , act: "resposition" , nextRoom: 'landing'});
                       setActiveRoom('landing')
                      
                       
@@ -539,7 +549,7 @@ const GameComponent = () => {
                         bankbg.visible = true;
                         setActiveRoom("bank")
                         playerContainer.visible = false;
-                        socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'bank', quickChat: quickChat , act: "resposition"});
+                        socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'bank', quickChat: quickChat , act: "resposition", nextRoom: 'bank'});
                         setActiveRoom('bank')
                       // }, duration * 1000);
                     }
@@ -547,7 +557,7 @@ const GameComponent = () => {
                     else {
                       playerContainer.x = newX - 25;
                       playerContainer.y = newY - 50;
-                      socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "move"});
+                      socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "move" , nextRoom: 'base'});
                       playerContainer.visible = true;
 
                     }
@@ -613,7 +623,7 @@ const GameComponent = () => {
             if (menubar) {
               menubar.style.visibility = "visible";
             }
-            socket.emit("move", { x: 650, y: 400, angle: 6, activeRoom: activeRoomRef.current, quickChat: quickChat , act: "move"});
+            socket.emit("move", { x: 650, y: 400, angle: 6, activeRoom: activeRoomRef.current, quickChat: quickChat , act: "move" , nextRoom: activeRoomRef.current});
 
             appRef.current = app;
 
@@ -751,7 +761,7 @@ const GameComponent = () => {
                 
                 return;
               };
-              if (pos.activeRoom !== activeRoomRef.current && playersWalking.current[id]){
+              if (pos.nextRoom !== activeRoomRef.current && playersWalking.current[id]){
                 app.stage.removeChild(players.current[id]);
                 delete players.current[id];
                 delete playersWalking.current[id];
@@ -949,7 +959,7 @@ const GameComponent = () => {
     if (appRef.current) {
       updateQuickChat(quickChat)
       const player = appRef.current.stage.getChildByName('player');
-      socketRef.current.emit("move", { x: player.x, y: player.y, angle: rotationIndex.current, activeRoom: activeRoom, quickChat: quickChat });
+      socketRef.current.emit("move", { x: player.x, y: player.y, angle: rotationIndex.current, activeRoom: activeRoom, quickChat: quickChat , nextRoom: activeRoom });
 
     }  
   }, [quickChat,activeRoom, appRef])
