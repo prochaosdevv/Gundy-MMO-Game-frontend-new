@@ -716,6 +716,7 @@ const GameComponent = () => {
               // }
               //   playersWalking.current[id] = WalkingSprites
               // }
+              if(players.current[id]){
 
               if (pos.quickChat) {
                 console.log("quickchat", pos.quickChat)
@@ -733,6 +734,7 @@ const GameComponent = () => {
                 players.current[id].getChildByName('quickchat').visible = false;
                 players.current[id].getChildByName('quickchat').getChildByName('quickchattext').text = ""
               }
+            }
 
               const distance = Math.hypot(pos.x - players.current[id].x, pos.y - players.current[id].y);
 
@@ -752,10 +754,10 @@ const GameComponent = () => {
              
               if(playersWalking.current[id]){
                 playersWalkingAnimation.current[id].kill()
-                let target = playersWalkingAnimation.targets()[0]; // Get the animated element
+                let target = playersWalkingAnimation.current[id].targets()[0]; // Get the animated element
                 players.current[id].x = gsap.getProperty(target, "x"); // Get the last 'x' position
                 players.current[id].y = gsap.getProperty(target, "y"); // Get the last 'y' position
-                console.log("gsap", players.current[id].x, playerplayers.current[id].y);
+                console.log("gsap", players.current[id].x, players.current[id].y);
                 players.current[id].getChildByName('player').visible = true;
 
                 if (players.current[id].getChildByName('walking')) {
@@ -790,7 +792,7 @@ const GameComponent = () => {
                     //     sprite.y = pos.y ;               
                     //     sprite.stop();
                     // });
-                    playersWalkingAnimation.current[id] = false
+                    // playersWalkingAnimation.current[id] = false
                     playersWalking.current[id] = false
                     players.current[id].getChildByName('player').visible = true;
                     players.current[id].removeChild(players.current[id].getChildByName('walking'));
