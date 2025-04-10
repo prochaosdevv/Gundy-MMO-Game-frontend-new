@@ -761,7 +761,7 @@ const GameComponent = () => {
                 
                 return;
               };
-              if (pos.nextRoom !== activeRoomRef.current && playersWalking.current[id]){
+              if (pos.nextRoom !== activeRoomRef.current && pos.activeRoom != activeRoomRef.current && playersWalking.current[id]){
                 app.stage.removeChild(players.current[id]);
                 delete players.current[id];
                 delete playersWalking.current[id];
