@@ -744,6 +744,9 @@ const GameComponent = () => {
               if (pos.activeRoom !== activeRoomRef.current && (pos.act == "resposition"  || (pos.x == players.current[id].x && pos.y == players.current[id].y))) {
                 app.stage.removeChild(players.current[id]);
                 delete players.current[id];
+                delete playersWalking.current[id];
+                delete playersWalkingAnimation.current[id];
+                
                 return;
               };
              
@@ -787,7 +790,8 @@ const GameComponent = () => {
                     //     sprite.y = pos.y ;               
                     //     sprite.stop();
                     // });
-                playersWalking.current[id] = false
+                    playersWalkingAnimation.current[id] = false
+                    playersWalking.current[id] = false
                     players.current[id].getChildByName('player').visible = true;
                     players.current[id].removeChild(players.current[id].getChildByName('walking'));
                     players.current[id].x = pos.x;
@@ -795,6 +799,8 @@ const GameComponent = () => {
                     if (pos.activeRoom !== activeRoomRef.current) {
                       app.stage.removeChild(players.current[id]);
                       delete players.current[id];
+                      delete playersWalking.current[id];
+                      delete playersWalkingAnimation.current[id];
                       return;
                     };
                   }
@@ -806,8 +812,12 @@ const GameComponent = () => {
             for (const id in players.current) {
               if (!data[id]) {
                 app.stage.removeChild(players.current[id]);
+                playersWalking.kill();
+                playersWalkingAnimation.current[id] = false;
                 // app.stage.removeChild(playersWalking.current[id]);
                 delete players.current[id];
+                delete playersWalking.current[id];
+                delete playersWalkingAnimation.current[id];
                 // delete playersWalking.current[id];
               }
             }
