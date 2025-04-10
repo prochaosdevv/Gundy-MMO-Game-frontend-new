@@ -14,6 +14,7 @@ const GameComponent = () => {
   const players = useRef({});
   const playersWalking = useRef({})
   const playersWalkingAnimation = useRef({})
+  const playerActiveRoomRef= useRef({})
   const userPos = useRef({})
   const { activeRoom, setActiveRoom, quickChat, setQuickChat, setAirTokBot, activeRoomRef, setShowChatIcon, user } = useContext(ContractContext);
   const rotationIndex = useRef(0)
@@ -343,7 +344,7 @@ const GameComponent = () => {
 
               if (isPointInPolygon({ x: newX, y: newY }, LandingrestrictedArea)) {
                 if (animating) {
-                  gsapanimation.kill(); // Stop animation without destroying it
+                  gsapanimation.pause(); // Stop animation without destroying it
                   let target = gsapanimation.targets()[0]; // Get the animated element
                   playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
                   playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
@@ -394,6 +395,25 @@ const GameComponent = () => {
                   ease: "none",
                   
                   onComplete: () => {
+
+                    for (const id in players.current) {
+                      if(id == user._id) continue
+                      console.log("activeRoom" ,playerActiveRoomRef.current,playerActiveRoomRef.current[id].nextRoom, activeRoomRef.current, playerActiveRoomRef.current[id].activeRoom)
+                      if (playerActiveRoomRef.current[id].nextRoom != activeRoomRef.current || playerActiveRoomRef.current[id].activeRoom != activeRoomRef.current) {
+                        app.stage.removeChild(players.current[id]);
+                         
+                        playersWalking.current[id] = false;
+                        if(playersWalkingAnimation.current[id]){
+                          playersWalkingAnimation.current[id].kill(); 
+                        }
+                        // app.stage.removeChild(playersWalking.current[id]);
+                        delete players.current[id];
+                        delete playersWalking.current[id];
+                        delete playersWalkingAnimation.current[id];
+                        // delete playersWalking.current[id];
+                      }
+                    }
+                  
                     playerContainer.children[0].visible = true;
                     playerContainer.removeChild(playerContainer.getChildByName("walking"))
                     //   WalkingSprites.forEach(sprite => {
@@ -426,7 +446,7 @@ const GameComponent = () => {
                       // WalkingSprites[_currentAvatarAngle].x = 162;
                       // WalkingSprites[_currentAvatarAngle].y = 428;
                     }
-                    
+                  
                     // playerContainer.visible = true;
                     animating = false;
 
@@ -527,6 +547,26 @@ const GameComponent = () => {
 
                     //     sprite.stop();
                     // });
+                    for (const id in players.current) {
+                      if(id == user._id) continue
+
+                      console.log("activeRoom" ,players.current,players.current[id].nextRoom, activeRoomRef.current, players.current[id].activeRoom)
+                      if (playerActiveRoomRef.current[id].nextRoom != activeRoomRef.current || playerActiveRoomRef.current[id].activeRoom != activeRoomRef.current) {
+                        app.stage.removeChild(players.current[id]);
+                         
+                        playersWalking.current[id] = false;
+                        if(playersWalkingAnimation.current[id]){
+                          playersWalkingAnimation.current[id].kill(); 
+                        }
+                        // app.stage.removeChild(playersWalking.current[id]);
+                        delete players.current[id];
+                        delete playersWalking.current[id];
+                        delete playersWalkingAnimation.current[id];
+                        // delete playersWalking.current[id];
+                      }
+                    }
+                  
+
                     playerContainer.children[0].visible = true;
                     playerContainer.removeChild(playerContainer.getChildByName("walking"))
                     socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "move" , nextRoom: 'base'});
@@ -563,7 +603,6 @@ const GameComponent = () => {
                     }
                      
                     animating = false;
-
                   }
                 });
 
@@ -636,7 +675,7 @@ const GameComponent = () => {
             for (const id in data) {
               if (id === user._id) continue;
               const pos = data[id];
-              
+              playerActiveRoomRef.current[id] = pos
               console.log('activeRoom',activeRoomRef.current)
 
               const _rotationFrames = [
@@ -770,7 +809,7 @@ const GameComponent = () => {
 
               // }
              
-              if(playersWalking.current[id]){
+              if(playersWalking.current[id] && pos.nextRoom != activeRoomRef.current ){
                 playersWalkingAnimation.current[id].kill()
                 let target = playersWalkingAnimation.current[id].targets()[0]; // Get the animated element
                 players.current[id].x = gsap.getProperty(target, "x"); // Get the last 'x' position
