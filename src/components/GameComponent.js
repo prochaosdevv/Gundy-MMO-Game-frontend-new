@@ -13,6 +13,7 @@ const GameComponent = () => {
   const socketRef = useRef(null);
   const players = useRef({});
   const playersWalking = useRef({})
+  const playersWalkingAnimation = useRef({})
   const userPos = useRef({})
   const { activeRoom, setActiveRoom, quickChat, setQuickChat, setAirTokBot, activeRoomRef, setShowChatIcon, user } = useContext(ContractContext);
   const rotationIndex = useRef(0)
@@ -326,27 +327,28 @@ const GameComponent = () => {
                 setAirTokBot(true);
                 return false;
               }
-              if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
-                console.log("plot found", e.global.x, e.global.y)
-                setTimeout(() => {
-                  playerContainer.x = 168
-                  playerContainer.y = 428
-                  playerContainer.visible = true;
-                  mainbg.visible = true;
+              // if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
+              //   console.log("plot found", e.global.x, e.global.y)
+              //   setTimeout(() => {
+              //     playerContainer.x = 168
+              //     playerContainer.y = 428
+              //     playerContainer.visible = true;
+              //     mainbg.visible = true;
 
-                  setActiveRoom("base")
-                }, duration * 1000);
+              //     setActiveRoom("base")
+              //   }, duration * 1000);
 
-              }
+              // }
 
 
               if (isPointInPolygon({ x: newX, y: newY }, LandingrestrictedArea)) {
                 if (animating) {
-                  gsapanimation.pause(); // Stop animation without destroying it
+                  gsapanimation.kill(); // Stop animation without destroying it
                   let target = gsapanimation.targets()[0]; // Get the animated element
                   playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
                   playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
                   console.log("gsap", playerContainer.x, playerContainer.y);
+                  playerContainer.visible = true;
                   if (playerContainer.getChildByName('walking')) {
                     playerContainer.removeChild(playerContainer.getChildByName('walking'))
                   }
@@ -386,7 +388,7 @@ const GameComponent = () => {
                   x: newX - 25,
                   y: newY - 50,
                   ease: "none",
-
+                  
                   onComplete: () => {
                     playerContainer.children[0].visible = true;
                     playerContainer.removeChild(playerContainer.getChildByName("walking"))
@@ -411,12 +413,16 @@ const GameComponent = () => {
                     if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
                       playerContainer.x = 162;
                       playerContainer.y = 428;
+                      playerContainer.visible = true;
+                      mainbg.visible = true;
+                      bg.visible = false
                         socket.emit("move", { x: 162, y: 428, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "resposition"});
                         setActiveRoom("base")
-
+                       
                       // WalkingSprites[_currentAvatarAngle].x = 162;
                       // WalkingSprites[_currentAvatarAngle].y = 428;
                     }
+                    
                     // playerContainer.visible = true;
                     animating = false;
 
@@ -448,35 +454,19 @@ const GameComponent = () => {
               }
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
-              if (isPointInPolygon({ x: newX, y: newY }, backtoLanding)) {
-                setTimeout(() => {
-                  playerContainer.visible = false;
-                  mainbg.visible = false;
-                  bankbg.visible = false;
-                  setActiveRoom("landing")
+              
 
-                }, duration * 1000);
-              }
-
-              if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
-                setTimeout(() => {
-                  playerContainer.visible = false;
-                  mainbg.visible = false;
-                  bankbg.visible = true;
-                  setActiveRoom("bank")
-
-                }, duration * 1000);
-              }
-
+            
 
               if (isPointInPolygon({ x: newX, y: newY }, restrictedArea)) {
                 // playerContainer.visible = false;
                 if (animating) {
-                  gsapanimation.pause(); // Stop animation without destroying it
+                  gsapanimation.kill(); // Stop animation without destroying it
                   let target = gsapanimation.targets()[0]; // Get the animated element
                   playerContainer.x = gsap.getProperty(target, "x"); // Get the last 'x' position
                   playerContainer.y = gsap.getProperty(target, "y"); // Get the last 'y' position
                   console.log("gsap", playerContainer.x, playerContainer.y)
+                  playerContainer.visible = true;
                  
                   if (playerContainer.getChildByName('walking')) {
                     playerContainer.removeChild(playerContainer.getChildByName('walking'))
@@ -533,27 +523,35 @@ const GameComponent = () => {
                     if (isPointInPolygon({ x: newX, y: newY }, backtoLanding)) {
                       playerContainer.x = 1299 - 55
                       playerContainer.y = 291 - 50
+                      mainbg.visible = false;
+                      bg.visible = true;
                       socket.emit("move", { x: 1299 - 55, y: 291 - 50, angle: _currentAvatarAngle, activeRoom: 'landing', quickChat: quickChat , act: "resposition"});
                       setActiveRoom('landing')
-
+                     
+                      
                       // WalkingSprites[_currentAvatarAngle].x = 1245;
                       // WalkingSprites[_currentAvatarAngle].y = 241;
                     }
+                    else if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
+                      // setTimeout(() => {
+                        // playerContainer.visible = false;
+                        mainbg.visible = false;
+                        bankbg.visible = true;
+                        setActiveRoom("bank")
+                        playerContainer.visible = false;
+                        socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'bank', quickChat: quickChat , act: "resposition"});
+                        setActiveRoom('bank')
+                      // }, duration * 1000);
+                    }
+      
                     else {
                       playerContainer.x = newX - 25;
                       playerContainer.y = newY - 50;
                       socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'base', quickChat: quickChat , act: "move"});
-                    }
-                    if (isPointInPolygon({ x: newX, y: newY }, bankGate)) {
-                      playerContainer.visible = false;
-                      socket.emit("move", { x: newX - 25, y: newY - 50, angle: _currentAvatarAngle, activeRoom: 'bank', quickChat: quickChat , act: "resposition"});
-                      setActiveRoom('bank')
-
-                    }
-                    else {
                       playerContainer.visible = true;
 
                     }
+                     
                     animating = false;
 
                   }
@@ -747,7 +745,18 @@ const GameComponent = () => {
                 return;
               };
              
+              if(playersWalking.current[id]){
+                playersWalkingAnimation.current[id].pause()
+                let target = playersWalkingAnimation.targets()[0]; // Get the animated element
+                players.current[id].x = gsap.getProperty(target, "x"); // Get the last 'x' position
+                players.current[id].y = gsap.getProperty(target, "y"); // Get the last 'y' position
+                console.log("gsap", players.current[id].x, playerplayers.current[id].y);
+                players.current[id].getChildByName('player').visible = true;
 
+                if (players.current[id].getChildByName('walking')) {
+                  players.current[id].removeChild(players.current[id].getChildByName('walking'))
+                }
+              }
 
               if (players.current[id].x != pos.x) {
                 if (players.current[id].getChildByName('player')) {
@@ -762,8 +771,8 @@ const GameComponent = () => {
                 players.current[id].getChildByName('walking').visible = true;
                 // players.current[id]
 
-                
-                gsap.to(players.current[id], {
+                playersWalking.current[id] = true
+                playersWalkingAnimation.current[id] = gsap.to(players.current[id], {
                   duration: duration,
                   x: pos.x,
                   y: pos.y,
@@ -776,6 +785,7 @@ const GameComponent = () => {
                     //     sprite.y = pos.y ;               
                     //     sprite.stop();
                     // });
+                playersWalking.current[id] = false
                     players.current[id].getChildByName('player').visible = true;
                     players.current[id].removeChild(players.current[id].getChildByName('walking'));
                     players.current[id].x = pos.x;
