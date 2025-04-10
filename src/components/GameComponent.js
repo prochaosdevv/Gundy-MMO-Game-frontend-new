@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useRef } from "react";
-import { Application, Sprite, Assets, AnimatedSprite, Text, Container, NineSlicePlane, Point } from "pixi.js";
+import { Application, Sprite, Assets, AnimatedSprite, Text, Container, NineSlicePlane, Point, BitmapText } from "pixi.js";
 import { GifSprite } from 'pixi.js/gif';
 import gsap from "gsap";
 import { ContractContext } from "@/contexts/ContractContext";
@@ -93,7 +93,7 @@ const GameComponent = () => {
           // These 4 values are your left, top, right, bottom edge slices
           bubble.name = "bubble";
           bubble.scale = 0.08
-          bubble.anchor = new Point(0.2, 0.7);
+          // bubble.anchor = new Point(0.2, 0.7);
     
 
 
@@ -661,17 +661,19 @@ const GameComponent = () => {
                   fontSize: 16,
                   wordWrap: true,
                   align: "center",
-                  wordWrapWidth: 10,
+                breakWords: true,
+                  wordWrapWidth: 100,
                   fill: 0x000000
                 });
-                nameText.anchor.set(0.1, 1);
+                nameText.anchor.set(0, 1);
                 // nameText.y = -5;
                 nameText.name = 'quickchattext'
                 // const bounds = nameText.getLocalBounds();
                 // nameText
                 bubble.width = 2200
-                bubble.height = pos.quickChat ? pos.quickChat.length > 20 ? 1000 : 500 : 500
+                bubble.height = quickChat ?  quickChat.length > 16 ? 1200 : quickChat.length > 10 ? 800 :   400 : 0
                 quickChatContainer.name = 'quickchat'
+                quickChatContainer.zIndex = 9999999999999
                 quickChatContainer.addChild(bubble)
                 quickChatContainer.addChild(nameText)
                 quickChatContainer.visible = pos.quickChat && pos.quickChat != "" ? true : false;
@@ -746,7 +748,7 @@ const GameComponent = () => {
               };
              
               if(playersWalking.current[id]){
-                playersWalkingAnimation.current[id].pause()
+                playersWalkingAnimation.current[id].kill()
                 let target = playersWalkingAnimation.targets()[0]; // Get the animated element
                 players.current[id].x = gsap.getProperty(target, "x"); // Get the last 'x' position
                 players.current[id].y = gsap.getProperty(target, "y"); // Get the last 'y' position
@@ -867,8 +869,12 @@ const GameComponent = () => {
 
     const player = appRef.current.stage.getChildByName('player');
     console.log(player)
-    if (quickChat != "") {
 
+    if (quickChat != "") {
+      if(player.getChildByName('quickchat')){
+    player.removeChild(player.getChildByName('quickchat'))
+
+      }
       const quickChatContainer = new Container();
       // Load the texture (already in your loader or from file)
       const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
@@ -880,24 +886,30 @@ const GameComponent = () => {
       bubble.scale = 0.08
       bubble.anchor = new Point(0.2, 0.7);
 
-      bubble.width = 2200
-      bubble.height = quickChat ? quickChat.length > 20 ? 1000 : 500 : 500
+      // bubble.width = 2200
+      // bubble.height = quickChat ? quickChat.length > 20 ? 1000 : 500 : 500
 
 
       const nameText = new Text(quickChat, {
         fontSize: 16,
         wordWrap: true,
         align: "center",
-        wordWrapWidth: 10,
+        breakWords: true,
+        wordWrapWidth: 100,
+        
         fill: 0x000000
       });
-      nameText.anchor.set(0.1, 1);
+      nameText.anchor.set(0, 1);
       // nameText.y = -5;
       nameText.name = "quickchattext"
       // const bounds = nameText.getLocalBounds();
       // nameText
+      bubble.width = 2200
+      bubble.height = quickChat ?  quickChat.length > 16 ? 1200 : quickChat.length > 10 ? 800 :   400 : 0
+
       quickChatContainer.visible = true;
       quickChatContainer.name = 'quickchat';
+      quickChatContainer.zIndex = 9999999999999
       quickChatContainer.addChild(bubble)
       quickChatContainer.addChild(nameText)
 

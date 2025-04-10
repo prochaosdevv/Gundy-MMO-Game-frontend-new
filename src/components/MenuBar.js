@@ -211,7 +211,7 @@ const MenuBar = () => {
         </div>
 
         <div className="quickchat-box">
-          <input type="text" placeholder="Quick Chat..." value={quickText} onChange={(e) => setQuickText(e.target.value)} />
+          <input type="text" maxLength={30} placeholder="Quick Chat..." value={quickText} onChange={(e) => setQuickText(e.target.value)} />
           <div className="icon-btn" style={{"width": "40px", "height": "40px"}} onClick={() => handleQuickchat()}>
             <img
               src="/assets/icons/ArrowIcon.png"
