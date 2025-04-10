@@ -814,7 +814,7 @@ const GameComponent = () => {
             for (const id in players.current) {
               if (!data[id]) {
                 app.stage.removeChild(players.current[id]);
-                playersWalking.kill();
+                playersWalking.current[id].kill();
                 playersWalkingAnimation.current[id] = false;
                 // app.stage.removeChild(playersWalking.current[id]);
                 delete players.current[id];
