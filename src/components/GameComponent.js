@@ -78,12 +78,36 @@ const GameComponent = () => {
           const aitoktexture = await Assets.load("/assets/AirTok.png");
           const airtokAvatar = new Sprite(aitoktexture);
           airtokAvatar.x = 650;
-          airtokAvatar.y = 550;
-          airtokAvatar.scale = 0.3;
+          airtokAvatar.y = 600;
+          airtokAvatar.scale = 0.15;
           // airtokAvatar.width = app.screen.width; // Fit screen width
           // airtokAvatar.height = app.screen.height; // Fit screen height
           airtokAvatar.zIndex = 9999; // Fit screen height
           airtokAvatar.visible = false;
+// Enable interactivity
+airtokAvatar.interactive = true;
+airtokAvatar.buttonMode = true; // Changes cursor to pointer on hover
+
+// Attach onclick event
+airtokAvatar.on('pointerdown', () => {
+  setAirTokBot(true);
+});
+
+  setInterval(() => {
+    const arrX =  [300,950, 1000]
+    const arrY =  [500,300, 600]
+    const index =  Math.floor(Math.random()*3);
+    // airtokAvatar.x = arrX[index];
+    // airtokAvatar.y = arrY[index];
+    gsap.to(airtokAvatar, {
+      duration: 2,
+      x: arrX[index],
+      y: arrY[index],
+      ease: "none",
+    })
+  }, 10000);
+    
+ 
 
           app.stage.addChild(airtokAvatar);
 
@@ -324,10 +348,10 @@ const GameComponent = () => {
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
               console.log("plot landing", e.global.x, e.global.y)
-              if (isPointInPolygon({ x: newX, y: newY }, airtok)) {
-                setAirTokBot(true);
-                return false;
-              }
+              // if (isPointInPolygon({ x: newX, y: newY }, airtok)) {
+              //   setAirTokBot(true);
+              //   return false;
+              // }
               // if (isPointInPolygon({ x: newX, y: newY }, baseCity)) {
               //   console.log("plot found", e.global.x, e.global.y)
               //   setTimeout(() => {
@@ -472,10 +496,10 @@ const GameComponent = () => {
               const newY = e.global.y
               // Calculate distance
               const distance = Math.hypot(newX - playerContainer.x, newY - playerContainer.y);
-              if (isPointInPolygon({ x: newX, y: newY }, airtok)) {
-                setAirTokBot(true);
-                return false;
-              }
+              // if (isPointInPolygon({ x: newX, y: newY }, airtok)) {
+              //   setAirTokBot(true);
+              //   return false;
+              // }
               // Compute duration dynamically (seconds)
               const duration = distance / 100;
               
