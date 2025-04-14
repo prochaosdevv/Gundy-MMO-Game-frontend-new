@@ -620,6 +620,14 @@ z-index: 1000;
   margin: 2px 0 20px;
   line-height: normal;
 }
+
+span.show-char-limit {
+  background: grey;
+  border-radius: 7px;
+  padding: 5px;
+}
+
+
 .profile_text_box{
   /* font-weight: 600; */
   background: #cdd2e8;
