@@ -1,0 +1,735 @@
+{
+  "frames": {
+    "AirTokWalk12.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 583
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 583
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 583
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk13.png": {
+      "frame": {
+        "x": 308,
+        "y": 0,
+        "w": 308,
+        "h": 579
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 579
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 579
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk30.png": {
+      "frame": {
+        "x": 616,
+        "y": 0,
+        "w": 308,
+        "h": 579
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 579
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 579
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk25.png": {
+      "frame": {
+        "x": 924,
+        "y": 0,
+        "w": 308,
+        "h": 564
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 564
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 564
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk19.png": {
+      "frame": {
+        "x": 1232,
+        "y": 0,
+        "w": 308,
+        "h": 563
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 563
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 563
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk20.png": {
+      "frame": {
+        "x": 1540,
+        "y": 0,
+        "w": 308,
+        "h": 560
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 560
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 560
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk18.png": {
+      "frame": {
+        "x": 1540,
+        "y": 560,
+        "w": 308,
+        "h": 557
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 557
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 557
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk24.png": {
+      "frame": {
+        "x": 1232,
+        "y": 563,
+        "w": 308,
+        "h": 556
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 556
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 556
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk21.png": {
+      "frame": {
+        "x": 924,
+        "y": 564,
+        "w": 308,
+        "h": 555
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 308,
+        "h": 555
+      },
+      "sourceSize": {
+        "w": 308,
+        "h": 555
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk27.png": {
+      "frame": {
+        "x": 1540,
+        "y": 1117,
+        "w": 307,
+        "h": 587
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 587
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 587
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk11.png": {
+      "frame": {
+        "x": 308,
+        "y": 579,
+        "w": 307,
+        "h": 585
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 585
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 585
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk28.png": {
+      "frame": {
+        "x": 0,
+        "y": 1119,
+        "w": 307,
+        "h": 584
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 584
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 584
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk29.png": {
+      "frame": {
+        "x": 615,
+        "y": 579,
+        "w": 307,
+        "h": 581
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 581
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 581
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk26.png": {
+      "frame": {
+        "x": 922,
+        "y": 1119,
+        "w": 307,
+        "h": 577
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 577
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 577
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk14.png": {
+      "frame": {
+        "x": 615,
+        "y": 1160,
+        "w": 307,
+        "h": 575
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 575
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 575
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk10.png": {
+      "frame": {
+        "x": 307,
+        "y": 1696,
+        "w": 307,
+        "h": 571
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 571
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 571
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk15.png": {
+      "frame": {
+        "x": 0,
+        "y": 1703,
+        "w": 307,
+        "h": 571
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 571
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 571
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk2.png": {
+      "frame": {
+        "x": 1229,
+        "y": 1119,
+        "w": 307,
+        "h": 568
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 568
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 568
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk16.png": {
+      "frame": {
+        "x": 1229,
+        "y": 1687,
+        "w": 307,
+        "h": 566
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 566
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 566
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk4.png": {
+      "frame": {
+        "x": 922,
+        "y": 1704,
+        "w": 307,
+        "h": 566
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 566
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 566
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk1.png": {
+      "frame": {
+        "x": 614,
+        "y": 1735,
+        "w": 307,
+        "h": 565
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 565
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 565
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk5.png": {
+      "frame": {
+        "x": 307,
+        "y": 2267,
+        "w": 307,
+        "h": 565
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 565
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 565
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk6.png": {
+      "frame": {
+        "x": 0,
+        "y": 2274,
+        "w": 307,
+        "h": 561
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 561
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 561
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk9.png": {
+      "frame": {
+        "x": 1536,
+        "y": 1704,
+        "w": 307,
+        "h": 561
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 561
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 561
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk17.png": {
+      "frame": {
+        "x": 1229,
+        "y": 2253,
+        "w": 307,
+        "h": 559
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 559
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 559
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk23.png": {
+      "frame": {
+        "x": 921,
+        "y": 2270,
+        "w": 307,
+        "h": 557
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 557
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 557
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk8.png": {
+      "frame": {
+        "x": 614,
+        "y": 2300,
+        "w": 307,
+        "h": 557
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 557
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 557
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk7.png": {
+      "frame": {
+        "x": 307,
+        "y": 2832,
+        "w": 307,
+        "h": 556
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 556
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 556
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk22.png": {
+      "frame": {
+        "x": 0,
+        "y": 2835,
+        "w": 307,
+        "h": 555
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 307,
+        "h": 555
+      },
+      "sourceSize": {
+        "w": 307,
+        "h": 555
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "AirTokWalk3.png": {
+      "frame": {
+        "x": 1536,
+        "y": 2265,
+        "w": 306,
+        "h": 562
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 306,
+        "h": 562
+      },
+      "sourceSize": {
+        "w": 306,
+        "h": 562
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "AirtokWalk.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 2056,
+      "h": 7856
+    },
+    "scale": 1
+  }
+}

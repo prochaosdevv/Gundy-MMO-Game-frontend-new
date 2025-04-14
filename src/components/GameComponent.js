@@ -93,22 +93,58 @@ airtokAvatar.on('pointerdown', () => {
   setAirTokBot(true);
 });
 
+
+const Airtoksheet = await Assets.load(`/assets/AirtokWalk.json`);
+const Airtokframes = [];
+
+// for (let i = 1; i <= 7; i++) {
+//     frames.push(sheet.textures[`${i}.png`]);
+// }
+for (let i = 1; i <= 30; i++) {
+  Airtokframes.push(Airtoksheet.textures[`AirTokWalk${i}.png`]);
+}
+// console.log("WalkingSprites", angle,frames)
+
+// Create an AnimatedSprite
+const airtokAnimation = new AnimatedSprite(Airtokframes);
+
+// Set animation properties
+airtokAnimation.animationSpeed = 0.51;
+airtokAnimation.loop = true;
+airtokAnimation.scale = 0.15;
+
+airtokAnimation.x = 650;
+airtokAnimation.y = 600;
+airtokAnimation.visible = false;
+
   setInterval(() => {
-    const arrX =  [300,950, 1000]
-    const arrY =  [500,300, 600]
-    const index =  Math.floor(Math.random()*3);
-    // airtokAvatar.x = arrX[index];
-    // airtokAvatar.y = arrY[index];
-    gsap.to(airtokAvatar, {
-      duration: 2,
-      x: arrX[index],
-      y: arrY[index],
-      ease: "none",
-    })
-  }, 10000);
+    // const arrX =  [300,950, 1000]
+    // const arrY =  [500,300, 600]
+    // const index =  Math.floor(Math.random()*3);
+    // // airtokAvatar.x = arrX[index];
+    // // airtokAvatar.y = arrY[index];
+    // gsap.to(airtokAvatar, {
+    //   duration: 2,
+    //   x: arrX[index],
+    //   y: arrY[index],
+    //   ease: "none",
+    // })
+    airtokAnimation.play()
+    airtokAnimation.visible = true;
+    airtokAvatar.visible = false;
+
+    setTimeout(() => {
+      airtokAvatar.visible = true;
+      airtokAnimation.visible = false;
+    }, 5000);
+
+
+
+  }, 20000);
     
  
 
+          app.stage.addChild(airtokAnimation);
           app.stage.addChild(airtokAvatar);
 
           const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
@@ -747,6 +783,8 @@ airtokAvatar.on('pointerdown', () => {
                 bubble.height = quickChat ?  quickChat.length > 16 ? 1200 : quickChat.length > 10 ? 800 :   400 : 0
                 quickChatContainer.name = 'quickchat'
                 quickChatContainer.zIndex = 9999999999999
+                quickChatContainer.x = 50;
+                quickChatContainer.y = 0;
                 quickChatContainer.addChild(bubble)
                 quickChatContainer.addChild(nameText)
                 quickChatContainer.visible = pos.quickChat && pos.quickChat != "" ? true : false;
@@ -1003,6 +1041,8 @@ airtokAvatar.on('pointerdown', () => {
       quickChatContainer.visible = true;
       quickChatContainer.name = 'quickchat';
       quickChatContainer.zIndex = 9999999999999
+      quickChatContainer.x = 50;
+      quickChatContainer.y = 0;
       quickChatContainer.addChild(bubble)
       quickChatContainer.addChild(nameText)
 
