@@ -88,6 +88,16 @@ const GameComponent = () => {
 airtokAvatar.interactive = true;
 airtokAvatar.buttonMode = true; // Changes cursor to pointer on hover
 
+
+const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
+
+// Create a resizable background using 9-slice scaling
+const bubble = new NineSlicePlane(bubbleTexture, 15, 15, 15, 15);
+// These 4 values are your left, top, right, bottom edge slices
+bubble.name = "bubble";
+bubble.scale = 0.08
+
+
 // Attach onclick event
 airtokAvatar.on('pointerdown', () => {
   setAirTokBot(true);
@@ -113,47 +123,43 @@ airtokAnimation.animationSpeed = 0.51;
 airtokAnimation.loop = true;
 airtokAnimation.scale = 0.15;
 
-airtokAnimation.x = 650;
-airtokAnimation.y = 600;
-airtokAnimation.visible = false;
 
-  setInterval(() => {
-    // const arrX =  [300,950, 1000]
-    // const arrY =  [500,300, 600]
-    // const index =  Math.floor(Math.random()*3);
-    // // airtokAvatar.x = arrX[index];
-    // // airtokAvatar.y = arrY[index];
-    // gsap.to(airtokAvatar, {
-    //   duration: 2,
-    //   x: arrX[index],
-    //   y: arrY[index],
-    //   ease: "none",
-    // })
-    airtokAnimation.play()
-    airtokAnimation.visible = true;
-    airtokAvatar.visible = false;
+airtokAnimation.visible = true;
 
-    setTimeout(() => {
-      airtokAvatar.visible = true;
-      airtokAnimation.visible = false;
-    }, 5000);
+const airtokAnimationContainer = new Container();
+airtokAnimationContainer.x = 650;
+airtokAnimationContainer.y = 600;
+airtokAnimationContainer.addChild(airtokAnimation);
+
+const AirTokQuickChatContainer = new Container();
 
 
-
-  }, 20000);
-    
+const airToknameText = new Text("Hi there, need some help?", {
+  fontSize: 16,
+  wordWrap: true,
+  align: "center",
+  breakWords: true,
+  wordWrapWidth: 150,
+  fill: 0x000000
+});
+airToknameText.anchor.set(-0.1, -0.2);
  
+airToknameText.name = 'quickchattext'
+ 
+bubble.width = 2200
+bubble.height =  800  
+AirTokQuickChatContainer.name = 'airtokquickchat'
+AirTokQuickChatContainer.zIndex = 9999999999999
+AirTokQuickChatContainer.x = 30;
+AirTokQuickChatContainer.y = -55;
+AirTokQuickChatContainer.addChild(bubble)
+AirTokQuickChatContainer.addChild(airToknameText)
+AirTokQuickChatContainer.visible = true ;
+airtokAnimationContainer.visible = true;
 
-          app.stage.addChild(airtokAnimation);
-          app.stage.addChild(airtokAvatar);
 
-          const bubbleTexture = await Assets.load("/assets/chat_bubble.png");
 
-          // Create a resizable background using 9-slice scaling
-          const bubble = new NineSlicePlane(bubbleTexture, 15, 15, 15, 15);
-          // These 4 values are your left, top, right, bottom edge slices
-          bubble.name = "bubble";
-          bubble.scale = 0.08
+  
           // bubble.anchor = new Point(0.2, 0.7);
     
 
@@ -717,6 +723,29 @@ airtokAnimation.visible = false;
             // if(chabubble){
             //   chabubble.style.visibility = "visible";
             // }`
+
+            setInterval(() => {
+    
+              airtokAvatar.visible = false;
+              airtokAnimationContainer.visible = true;
+              airtokAnimationContainer.addChild(AirTokQuickChatContainer)
+              
+              setTimeout(() => {
+                airtokAvatar.visible = true;
+                
+              airtokAnimationContainer.visible = false;
+              }, 5000);
+          
+          
+          
+            }, 10000);
+              
+           
+          
+            app.stage.addChild(airtokAnimationContainer);      
+            app.stage.addChild(airtokAvatar);
+
+
             setShowChatIcon(true)
             const menubar = document.getElementById("menubar");
             if (menubar) {
