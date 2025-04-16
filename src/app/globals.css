@@ -83,7 +83,7 @@ p,input,span,div,button{
   background: url("/assets/landing.png");
   background-size: cover;
 }
-#pixi-container2
+#pixi-container2,#pixi-container3
 {
   width: 1400px;
   height: 800px;

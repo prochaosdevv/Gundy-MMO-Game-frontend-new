@@ -1110,7 +1110,7 @@ airtokAnimationContainer.visible = true;
 
   return (<>
 
-    <div ref={canvasRef} />
+    <div id="pixi-container3" ref={canvasRef} />
   </>)
 
 };
