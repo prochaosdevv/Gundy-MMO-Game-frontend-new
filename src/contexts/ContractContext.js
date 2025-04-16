@@ -111,6 +111,9 @@ const {address,isConnected}=useAccount()
       useEffect(() => {
         if (address && isConnected) {
           createUser();
+        }else{
+          window.localStorage.clear()
+          setUser(null)
         }
       }, [isConnected, address]);
 
