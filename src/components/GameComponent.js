@@ -25,9 +25,7 @@ const GameComponent = () => {
     let animating = false;
     let gsapanimation;
     const access_token = window.localStorage.getItem("access_token");
-if(!user){
-  Assets.reset()
-}
+ 
     const socket = io("https://api.gundys.world", {
       auth: { access_token }
     });
@@ -41,7 +39,7 @@ if(!user){
         await app.init({
           width: 1400,
           height: 800,
-          backgroundColor: "white",
+          backgroundAlpha: 0,
         });
 
         // Store app in ref
