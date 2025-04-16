@@ -80,6 +80,21 @@ p,input,span,div,button{
   display: flex;
   justify-content: center;
   align-items: center;
+  background: url("/assets/landing.png");
+  background-size: cover;
+}
+#pixi-container2
+{
+  width: 1400px;
+  height: 800px;
+  margin: 50px auto;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("/assets/landing.png");
+  background-size: cover;
 }
 .ui-bar {
   display: flex;

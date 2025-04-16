@@ -10,7 +10,7 @@ import { zeroAddress } from "viem";
 import { truncateAddress } from "@/utils/functions";
 import { ConnectWalletButton, DisconnectWalletButton, SwitchNetworkButton } from "./CustomConnectButton";
 
-const WalletBox = () => {
+const WalletBox = ({open}) => {
  const {address,isConnected}=useAccount()
     const closeBox = () => {
         document.getElementById("wallet_box").style.display = "none";
@@ -18,7 +18,7 @@ const WalletBox = () => {
 
     return (
         <>
-         <div id="wallet_box" className="wallet-container" style={{"display": "none"}}>
+         <div id="wallet_box" className="wallet-container" style={{"display": open ? "block" : "none"}}>
    <div className="cross_box" onClick={() => closeBox()}>
     <div className="cross_bg">
         <img src="/assets/cross.png" className="cross_btn" alt="Close" id="wallet_close_btn" />
@@ -45,7 +45,7 @@ const WalletBox = () => {
           width:"72%"
         }}> */}
       {!address &&  <Box py={"2rem"}>
-        <ConnectWalletButton />
+        <ConnectWalletButton  />
         </Box>}
       {address&&<DisconnectWalletButton />}
       {address &&<SwitchNetworkButton />}

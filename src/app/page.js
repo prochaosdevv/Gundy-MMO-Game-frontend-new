@@ -16,6 +16,7 @@ import { ContractContext } from "@/contexts/ContractContext";
 import { Box } from "@mui/material";
 import BankContainer from "@/components/BankContainer";
 import AirBot from "@/components/AirBot";
+import { useAccount } from "wagmi";
 
 const GameComponent = dynamic(
   () => import('@/components/GameComponent'),
@@ -58,11 +59,15 @@ const PopupBox = dynamic(
 
 
 export default function Home() {
-   const {chatOpen,setChatOpen,ad,activeRoom,showChatIcon,airTokBot}=useContext(ContractContext)
+   const {chatOpen,setChatOpen,ad,activeRoom,showChatIcon,airTokBot,user}=useContext(ContractContext)
    console.log(activeRoom,ad);
-   
+    const {address} = useAccount()
   return (
     <Suspense>
+      {
+        address && user ?
+        (
+          
     <div id="pixi-container" style={{position:"relative"}}>
       
         <GameComponent />
@@ -73,7 +78,7 @@ export default function Home() {
         {airTokBot && <AirBot /> }
         <ProfileBox />
         <SettingBox />
-        <WalletBox />
+        <WalletBox open={false} />
         <PopupBox />
         {
         (activeRoom == "landing" &&  ad) &&
@@ -138,6 +143,13 @@ export default function Home() {
         </Box>} */}
 
     </div>
+
+):
+<div id="pixi-container2" style={{position:"relative"}}>
+  <WalletBox open={true} />
+</div>
+
+}
     </Suspense>
   );
 }
