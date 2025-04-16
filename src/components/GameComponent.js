@@ -998,6 +998,7 @@ airtokAnimationContainer.visible = true;
           texture: true,
           baseTexture: true,
         });
+        Assets.reset()
         appRef.current = null; // Clear ref
       }
     };
