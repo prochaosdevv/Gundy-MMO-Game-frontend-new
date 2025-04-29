@@ -77,12 +77,12 @@ const GameComponent = () => {
 
           const aitoktexture = await Assets.load("/assets/AirTok.png");
           const airtokAvatar = new Sprite(aitoktexture);
-          airtokAvatar.x = 650;
-          airtokAvatar.y = 600;
+          airtokAvatar.x = 1150;
+          airtokAvatar.y = 690;
           airtokAvatar.scale = 0.15;
           // airtokAvatar.width = app.screen.width; // Fit screen width
           // airtokAvatar.height = app.screen.height; // Fit screen height
-          airtokAvatar.zIndex = 9999; // Fit screen height
+          airtokAvatar.zIndex = 999999999999; // Fit screen height
           airtokAvatar.visible = false;
 // Enable interactivity
 airtokAvatar.interactive = true;
@@ -123,12 +123,12 @@ airtokAnimation.animationSpeed = 0.51;
 airtokAnimation.loop = true;
 airtokAnimation.scale = 0.15;
 
-
+airtokAnimation.zIndex= 99999999999999
 airtokAnimation.visible = true;
 
 const airtokAnimationContainer = new Container();
-airtokAnimationContainer.x = 650;
-airtokAnimationContainer.y = 600;
+airtokAnimationContainer.x = 1150;
+airtokAnimationContainer.y = 690;
 airtokAnimationContainer.addChild(airtokAnimation);
 
 const AirTokQuickChatContainer = new Container();
@@ -156,6 +156,7 @@ AirTokQuickChatContainer.addChild(bubble)
 AirTokQuickChatContainer.addChild(airToknameText)
 AirTokQuickChatContainer.visible = true ;
 airtokAnimationContainer.visible = true;
+airtokAnimationContainer.zIndex = 9999999999999
 
 
 

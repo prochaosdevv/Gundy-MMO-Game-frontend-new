@@ -129,6 +129,8 @@ export default function Home() {
   
 </Box>
         }
+<BankContainer/>
+
  {/* {showChatIcon && !chatOpen&&<Box sx={{
   cursor:"pointer",
   position: "absolute",

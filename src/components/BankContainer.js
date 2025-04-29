@@ -11,8 +11,9 @@ import {
   Stepper,
   Tooltip,
 } from "@mui/material";
+import axios from "axios";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 const steps = [
   "Awaiting Deposit",
@@ -22,14 +23,14 @@ const steps = [
 ];
 
 const BankContainer = () => {
-  const [selectCurrecncy_1, setSelectCurrecncy_1] = useState(1);
+  const [selectCurrecncy_1, setSelectCurrecncy_1] = useState(null);
   const [address, setAddress] = useState("0x000000");
   const [step1, setStep1] = useState(true);
   const [step2, setStep2] = useState(false);
   const [step3, setStep3] = useState(false);
-  const [selectCurrecncy_2, setSelectCurrecncy_2] = useState(0);
-  const [chooseBlockchain, setChooseBlockchain] = useState(1);
-  const [chooseBlockchain_2, setChooseBlockchain_2] = useState(0);
+  const [selectCurrecncy_2, setSelectCurrecncy_2] = useState(null);
+  const [chooseBlockchain, setChooseBlockchain] = useState('eth');
+  const [chooseBlockchain_2, setChooseBlockchain_2] = useState('base');
   const [activeStep, setActiveStep] = useState(0);
   const {setActiveRoom} = useContext(ContractContext)
   const handleNext = () => {
@@ -71,6 +72,78 @@ const BankContainer = () => {
     setTooltipText("Copied!");
     setTimeout(() => setTooltipText("Copy to clipboard"), 2000);
   };
+  const [currencies, setCurrencies] = useState([])
+  const getCurrencies = async () => {
+      const access_token = window.localStorage.getItem("access_token");
+  
+      try {
+        const res = await axios.get(`https://api.changenow.io/v2/exchange/currencies?active=&flow=standard&buy=&sell=`);
+  
+        if (res.status === 200) {
+  
+            // console.log("res.data",res.data)
+          setCurrencies(res.data);
+  
+  
+        }
+      } catch (err) { }
+    };
+
+    useEffect(() => {
+      getCurrencies()
+    },[])
+
+    const getRate = async () => {
+      
+
+      try {
+        const res = await axios.get(`https://api.changenow.io/v2/exchange/estimated-amount?fromCurrency=${selectCurrecncy_1}&toCurrency=${selectCurrecncy_2}&fromNetwork=${chooseBlockchain}&toNetwork=${chooseBlockchain_2}&fromAmount=1&flow=fixed-rate` , {
+          headers: {
+            "x-changenow-api-key" : "0200cb58dac08a404565ac712b28a73d1b80612f7e2ff162304d1953510c11b6"
+          }
+        });
+  
+        if (res.status === 200) {
+  
+            console.log("res.data",res.data.toAmount)
+          // setCurrencies(res.data);
+  
+  
+        }
+      } catch (err) { }
+
+
+    }
+
+    const getEstimate = async () => {
+      
+
+      try {
+        const res = await axios.get(`https://api.changenow.io/v2/exchange/estimated-amount?fromCurrency=${selectCurrecncy_1}&toCurrency=${selectCurrecncy_2}&fromNetwork=${chooseBlockchain}&toNetwork=${chooseBlockchain_2}&fromAmount=0.1&flow=fixed-rate` , {
+          headers: {
+            "x-changenow-api-key" : "0200cb58dac08a404565ac712b28a73d1b80612f7e2ff162304d1953510c11b6"
+          }
+        });
+  
+        if (res.status === 200) {
+  
+            console.log("res.data",res.data.toAmount)
+          // setCurrencies(res.data);
+  
+  
+        }
+      } catch (err) { }
+
+
+    }
+
+    useEffect(() => {
+      if(selectCurrecncy_1 && selectCurrecncy_2){
+        getEstimate();
+      }
+    },[chooseBlockchain,chooseBlockchain_2,selectCurrecncy_1,selectCurrecncy_2])
+    
+
   return (
 <>
 <div style={{position:"absolute",top:"18px",left:"18px",cursor:"pointer"}} onClick={() => setActiveRoom('base')}>
@@ -174,24 +247,28 @@ const BankContainer = () => {
                   },
                 }}
               >
-                <MenuItem value={0}>
-                  <img
-                    src="/assets/base_icon_.svg"
-                    className=""
-                    style={{ width: "25px", marginRight: "5px" }}
-                    alt="icon"
-                  />
-                  <b>Base</b>
-                </MenuItem>
-                <MenuItem value={1}>
-                  <img
-                    src="/assets/eth_symbol.png"
-                    className=""
-                    style={{ width: "25px", marginRight: "5px" }}
-                    alt="icon"
-                  />
-                  <b>Eth</b>
-                </MenuItem>
+               
+               <MenuItem value={"base"}>
+                    <img
+                      src="/assets/base_icon_.svg"
+                      className=""
+                      style={{ width: "25px", marginRight: "5px" }}
+                      alt="icon"
+                    />
+                    <b>Base</b>
+                  </MenuItem>
+                  <MenuItem value={"eth"}>
+                    <img
+                      src="/assets/eth_symbol.png"
+                      className=""
+                      style={{ width: "25px", marginRight: "5px" }}
+                      alt="icon"
+                    />
+                    <b>Eth</b>
+                  </MenuItem>
+                  
+                  
+               
               </Select>
               <Box
                 sx={{
@@ -252,24 +329,27 @@ const BankContainer = () => {
                     },
                   }}
                 >
-                  <MenuItem value={0}>
-                    <img
-                      src="/assets/base_icon_.svg"
-                      className=""
-                      style={{ width: "25px", marginRight: "5px" }}
-                      alt="icon"
-                    />
-                    <b>Base</b>
-                  </MenuItem>
-                  <MenuItem value={1}>
-                    <img
-                      src="/assets/eth_symbol.png"
-                      className=""
-                      style={{ width: "25px", marginRight: "5px" }}
-                      alt="icon"
-                    />
-                    <b>Eth</b>
-                  </MenuItem>
+                  {
+                     
+                      currencies.length > 0 &&
+                      currencies.map((v,i) => {
+                        if(v.network == chooseBlockchain)
+                      return (
+                    <MenuItem value={v.ticker}>
+                      <img
+                        src={v.image}
+                        className=""
+                        style={{ width: "25px", marginRight: "5px" }}
+                        alt="icon"
+                      />
+                      <b>{v.name}</b>
+                    </MenuItem>
+                      )
+    
+                    })
+                    }
+                   
+                 
                 </Select>
               </Box>
               <Typography className="label_small"
@@ -319,7 +399,7 @@ const BankContainer = () => {
                     },
                   }}
                 >
-                  <MenuItem value={0}>
+                  <MenuItem value={"base"}>
                     <img
                       src="/assets/base_icon_.svg"
                       className=""
@@ -328,7 +408,7 @@ const BankContainer = () => {
                     />
                     <b>Base</b>
                   </MenuItem>
-                  <MenuItem value={1}>
+                  <MenuItem value={"eth"}>
                     <img
                       src="/assets/eth_symbol.png"
                       className=""
@@ -368,6 +448,7 @@ const BankContainer = () => {
                   0.00048565
                 </Typography>
               </Box>
+              {currencies.length} {chooseBlockchain_2}
               <Select
                 value={selectCurrecncy_2}
                 onChange={(e) => setSelectCurrecncy_2(e.target.value)}
@@ -399,24 +480,25 @@ const BankContainer = () => {
                   },
                 }}
               >
-                <MenuItem value={0}>
-                  <img
-                    src="/assets/base_icon_.svg"
-                    className=""
-                    style={{ width: "25px", marginRight: "5px" }}
-                    alt="icon"
-                  />
-                  <b>Base</b>
-                </MenuItem>
-                <MenuItem value={1}>
-                  <img
-                    src="/assets/eth_symbol.png"
-                    className=""
-                    style={{ width: "25px", marginRight: "5px" }}
-                    alt="icon"
-                  />
-                  <b>Eth</b>
-                </MenuItem>
+                {
+                     
+                     currencies.length > 0 &&
+                     currencies.map((v,i) => {
+                       if(v.network == chooseBlockchain_2)
+                     return (
+                   <MenuItem value={v.ticker}>
+                     <img
+                       src={v.image}
+                       className=""
+                       style={{ width: "25px", marginRight: "5px" }}
+                       alt="icon"
+                     />
+                     <b>{v.name}</b>
+                   </MenuItem>
+                     )
+   
+                   })
+                   }
               </Select>
             </Box>
             <Typography className="label">
