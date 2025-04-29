@@ -25,7 +25,32 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
- 
+.custom-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: inherit; /* optional */
+  font-size: 20px;
+  width: 100%;
+  appearance: textfield; /* hides spinners on most browsers */
+  font-family: Arial, sans-serif;
+  color: #d2d8f3;
+  font-weight: bold;
+  line-height: normal;
+}
+
+/* Hide number input spinners for Chrome, Safari, Edge */
+.custom-input::-webkit-outer-spin-button,
+.custom-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide spinners for Firefox */
+.custom-input[type='number'] {
+  -moz-appearance: textfield;
+}
+
 p,input,span,div,button{
   font-family: Arial, sans-serif !important;
 }

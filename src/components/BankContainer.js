@@ -28,6 +28,7 @@ const BankContainer = () => {
   const [step1, setStep1] = useState(true);
   const [step2, setStep2] = useState(false);
   const [step3, setStep3] = useState(false);
+  const [sendAmt, setSendAmt] = useState(0.000365);
   const [selectCurrecncy_2, setSelectCurrecncy_2] = useState(null);
   const [chooseBlockchain, setChooseBlockchain] = useState('eth');
   const [chooseBlockchain_2, setChooseBlockchain_2] = useState('base');
@@ -289,14 +290,21 @@ const BankContainer = () => {
                   >
                     You send
                   </Typography>
-                  <Typography className="label_big"
+                                 {/* <Typography className="label_big"
                     sx={{
                       color: "#d2d8f3",
                       lineHeight: "normal",
                     }}
                   >
                     0.00048565
-                  </Typography>
+                  </Typography> */}
+                  <input
+  type="number"
+  placeholder="0.00"
+  class="custom-input"
+  value={sendAmt}
+  onChange={(e)=>setSendAmt(e.target.value)}
+/>
                 </Box>
                 <Select
                   value={selectCurrecncy_1}
